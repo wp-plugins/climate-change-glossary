@@ -16,7 +16,7 @@ On two pages (automatically generated) the whole thesaurus can be displayed and 
 Each post is analysed automatically to find words and phrases maching labels of a concept (prefLabel, altLabel or hiddenLabel) in the thesaurus. The first hit will automatically be highlighted. A mousover tooltip shows the short description of the term/phrase and the link points to the more detailed description on the glossary page.
 
 Thanks to Benjamin Nowack: The thesaurus is imported into the system and is queried via ARC2 (https://github.com/semsol/arc2).
-Thanks to rduffy (http://wordpress.org/extend/plugins/profile/rduffy). His 'Glossary' Plugin (http://wordpress.org/extend/plugins/automatic-glossary) inpired me, and I was able to develop this plugin on top of his ideas.
+Thanks to rduffy (http://wordpress.org/extend/plugins/profile/rduffy). His *Glossary* Plugin (http://wordpress.org/extend/plugins/automatic-glossary) inpired me, and I was able to develop this plugin on top of his ideas.
 
 Works with PHP 5, MySQL 5 und ARC2
 
@@ -24,37 +24,37 @@ Works with PHP 5, MySQL 5 und ARC2
 
 Install using WordPress:
 
-1. Log in and go to 'Plugins' and click on 'Add New'.
-2. Search for 'climate change glossary' and hit the 'Install Now' link in the results. WordPress will install it.
+1. Log in and go to *Plugins* and click on *Add New*.
+2. Search for *climate change glossary* and hit the *Install Now* link in the results. WordPress will install it.
 3. Download ARC2 from https://github.com/semsol/arc2 and unzip it.
-4. Open the unziped folder and upload the entire content into the `/wp-content/plugins/climate-change-glossary/arc/` directory.
-5. From the Plugin Management page in Wordpress, activate the 'Climate change glossary' plugin.
-6. Go to 'Settings' -> 'Climate change glossary' in Wordpress and click on 'Import/Update Thesaurus'. Uploading the thesaurus can take a few minutes (4-5 minutes). Please remain patient and don't interrupt the procedure.
+4. Open the unziped folder and upload the entire content into the */wp-content/plugins/climate-change-glossary/arc/* directory.
+5. From the Plugin Management page in Wordpress, activate the *Climate change glossary* plugin.
+6. Go to *Settings* -> *Climate change glossary* in Wordpress and click on *Import/Update Thesaurus*. Uploading the thesaurus can take a few minutes (4-5 minutes). Please remain patient and don*t interrupt the procedure.
 
 Install manually:
 
 1. Download the plugin zip file and unzip it.
-2. Upload the plugin contents into your WordPress installation's plugin directory on the server. The plugin's .php files, readme.txt and subfolders should be installed in the `wp-content/plugins/climate-change-glossary/` directory.
+2. Upload the plugin contents into your WordPress installation*s plugin directory on the server. The plugin*s .php files, readme.txt and subfolders should be installed in the *wp-content/plugins/climate-change-glossary/* directory.
 3. Download ARC2 from https://github.com/semsol/arc2 and unzip it.
-4. Open the unziped folder and upload the entire contents into the `/wp-content/plugins/climate-change-glossary/arc/` directory.
-5. From the Plugin Management page in Wordpress, activate the 'Climate change glossary' plugin.
-6. Go to 'Settings' -> 'Climate change glossary' in Wordpress and click on 'Import/Update Thesaurus'. Uploading the thesaurus can take a few minutes (4-5 minutes). Please remain patient and don't interrupt the procedure.
+4. Open the unziped folder and upload the entire contents into the */wp-content/plugins/climate-change-glossary/arc/* directory.
+5. From the Plugin Management page in Wordpress, activate the *Climate change glossary* plugin.
+6. Go to *Settings* -> *Climate change glossary* in Wordpress and click on *Import/Update Thesaurus*. Uploading the thesaurus can take a few minutes (4-5 minutes). Please remain patient and don*t interrupt the procedure.
 
 == Frequently Asked Questions ==
-= Does my main automatically generated glossary page need to be titled "Glossary"? =
+= Does my main automatically generated glossary page need to be titled **Glossary**? =
 No. It can be called whatever you like. You can enter a content if you like, but be careful with the shortcuts.
 
-= Does my automatically generated subpage need to be titled "Item"? =
+= Does my automatically generated subpage need to be titled **Item**? =
 No. It can be called whatever you like. You can enter a content if you like, but be careful with the shortcuts.
 
 = How do I add a thesaurus item?  =
 You will need a SKOS thesaurus management tool like PoolParty (http://poolparty.punkt.at/) to add/modify terms. The glossary is generated automatically from the imported thesaurus.
 
 = How can I update the glossary? =
-Simply load the updated thesaurus again (admin area: 'Settings' -> 'Climate change glossary'). The old thesaurus will be overwritten. New or updated concepts will be recognized immediately by the link generator.
+Simply load the updated thesaurus again (admin area: *Settings* -> *Climate change glossary*). The old thesaurus will be overwritten. New or updated concepts will be recognized immediately by the link generator.
 
 = How to style the tooltip? =
-This tooltip consists of a CSS file and three PNG pictures which can be found in the plugin directory (`js/unitip/`). Two pictures consist of the top and bottom edge with and without the pointer and the third picture consists of the middle part.
+This tooltip consists of a CSS file and three PNG pictures which can be found in the plugin directory (*js/unitip/*). Two pictures consist of the top and bottom edge with and without the pointer and the third picture consists of the middle part.
 To style this tooltip, the three pictures can be interchanged and the CSS file adjusted accordingly.
 
 == Screenshots ==
