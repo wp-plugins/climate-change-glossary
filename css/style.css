@@ -49,6 +49,7 @@ color: #252525;
 
 /* style for the itemlist */
 
+.PPThesaurusDetails,
 .PPThesaurusList {
 clear: both;
 float: none;

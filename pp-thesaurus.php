@@ -3,7 +3,7 @@
 Plugin Name: Climate change glossary
 Plugin URI: http://poolparty.punkt.at
 Description: This plugin imports a SKOS thesaurus via <a href="https://github.com/semsol/arc2">ARC2</a>. It highlighs terms and generates links automatically in any page which contains terms from the thesaurus.
-Version: 1.0
+Version: 1.1
 Author: reegle.info
 Author URI: http://www.reegle.info
 */
@@ -96,7 +96,6 @@ function pp_thesaurus_settings_page ($sError='') {
 	?>
 	<div class="wrap">
 		<h2><?php _e('Climate change glossary settings', 'pp-thesaurus'); ?></h2>
-		<form method="post" action="" enctype="multipart/form-data">
 	<?php
 	if (!empty($sError)) {
 	?>
@@ -112,7 +111,7 @@ function pp_thesaurus_settings_page ($sError='') {
 	$sImportFile 		= get_option('PPThesaurusImportFile');
 	$sSparqlEndpoint 	= get_option('PPThesaurusSparqlEndpoint');
 	$sUpdated 			= get_option('PPThesaurusUpdated');
-	if ($bPopup == true) {
+	if ($bPopup) {
 		$sPopupTrue = 'checked="checked" ';
 	} else {
 		$sPopupFalse = 'checked="checked" ';
@@ -123,7 +122,7 @@ function pp_thesaurus_settings_page ($sError='') {
 		$sLangOther = 'checked="checked" ';
 		$sOther		= $sLanguage;
 	}
-	$sFrom = empty($sImportFile) ? empty($sSparqlEndpoint) ? 'undefined' : 'Sparql endpoint' : $sImportFile;
+	$sFrom = empty($sImportFile) ? empty($sSparqlEndpoint) ? 'undefined' : 'SPARQL endpoint' : $sImportFile;
 	$sDate = empty($sUpdated) ? 'undefined' : date('d.m.Y', $sUpdated);
 	if (empty($sSparqlEndpoint)) {
 		$sSparqlEndpoint = PP_THESAURUS_DEFAULT_ENDPOINT;
@@ -166,7 +165,7 @@ function pp_thesaurus_settings_page ($sError='') {
 					<th scope="row" colspan="2"><?php _e('Import/Update SKOS Thesaurus from:', 'pp-thesaurus'); ?></th>
 				</tr>
 				<tr valign="baseline">
-					<th scope="row"><?php _e('Sparql endpoint', 'pp-thesaurus'); ?></th>
+					<th scope="row"><?php _e('SPARQL endpoint', 'pp-thesaurus'); ?></th>
 					<td>
 						URL: <input type="text" size="50" name="SparqlEndpoint" value="<?php echo $sSparqlEndpoint; ?>" />
 					</td>
@@ -197,8 +196,6 @@ function pp_thesaurus_settings_page ($sError='') {
 				This plugin is provided by the <a href="http://poolparty.punkt.at/" target="_blank">PoolParty</a> Team.<br />
 				PoolParty is an easy-to-use SKOS editor for the Semantic Web
 			</p>
-			<input type="hidden" name="secureToken" value="<?php echo pp_thesaurus_get_secure_token(); ?>" />
-		</form>
 	</div>
 	<?php
 }

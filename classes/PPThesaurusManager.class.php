@@ -160,7 +160,10 @@ class PPThesaurusManager {
 			foreach ($aData as &$aConcept) {
 				if (isset($aConcept['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])) {
 					foreach ($aConcept['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] as &$aType) {
-						$aType['value'] = str_replace(array('(', ')'), array('%28', '%29'), $aType['value']);
+						$aType['value'] = str_replace(array('(', ')', ',', ';'), array('%28', '%29', '%2C', '%3B'), $aType['value']);
+						$iPos = strrpos($aType['value'], '/');
+						$sName = str_replace(array('.', ':'), array('%2E', '%3A'), substr($aType['value'], $iPos));
+						$aType['value'] = substr($aType['value'], 0, $iPos) . $sName;
 					}
 				}
 			}

@@ -64,5 +64,7 @@ To style this tooltip, the three pictures can be interchanged and the CSS file a
 
 
 == Changelog ==
+= 1.1 =
+Bug with the import from SPARQL endpoint is resolved
 = 1.0 =
 Initial release
