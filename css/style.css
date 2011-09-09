@@ -1,4 +1,11 @@
 
+.PPThesaurusDefInfo {
+display:block;
+font-style:italic;
+font-weight:bold;
+padding-bottom:10px;
+}
+
 a.ppThesaurus {
 background: url("thesaurus.png") no-repeat scroll right 2px transparent;
 color: #019F7B;
@@ -49,7 +56,6 @@ color: #252525;
 
 /* style for the itemlist */
 
-.PPThesaurusDetails,
 .PPThesaurusList {
 clear: both;
 float: none;

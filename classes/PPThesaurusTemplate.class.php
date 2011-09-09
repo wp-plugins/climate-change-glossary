@@ -34,7 +34,7 @@ class PPThesaurusTemplate {
 		foreach($aIndex as $sChar => $sKind) {
 			$sClass = ($i == 1) ? 'first' : ($i == $iCount ? 'last' : '');
 			$sLetter = ($sChar == 'ALL') ? 'ALL' : chr($sChar);
-			$sLink = '<a href="' . get_option('siteurl') . '/' . $oPage->post_name . '?filter=' . $sChar . '">' . $sLetter . '</a>';
+			$sLink = '<a href="' . get_bloginfo('url', 'display') . '/' . $oPage->post_name . '?filter=' . $sChar . '">' . $sLetter . '</a>';
 			switch ($sKind) {
 				case 'disabled':
 					if (!empty($sClass)) {
@@ -62,13 +62,33 @@ class PPThesaurusTemplate {
 	}
 
 
+	public function showItemList ($aAtts) {
+		$aList 		= $this->oPPTM->getList($_GET['filter']);
+		$iCount 	= count($aList);
+		$sContent 	= '';
+		if ($iCount > 0) {
+			$sContent .= '<ul class="PPThesaurusList">';
+			$i = 1;
+			foreach($aList as $oConcept) {
+				$sClass = ($i == 1) ? ' class="first"' : ($i == $iCount ? ' class="last"' : '');
+				$sDefinition = $this->oPPTM->getDefinition($oConcept->uri, $oConcept->definition, true, true);
+				$sContent .= '<li' . $sClass . '>' . pp_thesaurus_get_link($oConcept->prefLabel, $oConcept->uri, $oConcept->prefLabel, $sDefinition, true) . '</li>';
+				$i++;
+			}
+			$sContent .= '</ul>';
+		}
+
+		return $sContent;
+	}
+
+
 	public function showItemDetails ($aAtts) {
 		try {
 			if (is_null($this->oItem)) {
 				$this->oItem = $this->oPPTM->getItem($_GET['uri']);
 			}
 		} catch (Exception $e) {
-			return '<p>' . _e('An error has occurred while reading concept data.', 'Poolparty Thesaurus') . '</p>';
+			return '<p>' . __('An error has occurred while reading concept data.', 'Poolparty Thesaurus') . '</p>';
 		}
 
 		$sContent = '<div class="PPThesaurusDetails">';
@@ -95,11 +115,11 @@ class PPThesaurusTemplate {
 
 		if ($this->oItem->uri) {
 			$sLink = $this->oItem->uri . '/' . urlencode($this->oItem->prefLabel) . '.htm';
-			$sContent .= '<p>Go to <strong>' . $this->oItem->prefLabel . '</strong> on <a href="' . $sLink . '" target="_blank" title="go to reegle.info">reegle.info for all details</a>.</p>';
+			$sContent .= '<p>More details are availbale in reegle\'s <a href="http://www.reegle.info/glossary" target="_blank" title="go to reegle.info">clean energy and climate change glossary</a> (direct link: <a href="' . $sLink . '" target="_blank" title="go to reegle.info">description/definition <strong>' . $this->oItem->prefLabel . '</a></strong>).</p>';
 		}
 
 		if ($this->oItem->searchLink) {
-			$sContent .= '<p><strong>Search for</strong> <a href="' . $this->oItem->searchLink . '" title="Search for ' . $this->oItem->prefLabel . '">' . $this->oItem->prefLabel . '</a></p>';
+			$sContent .= '<p>Find more <a href="' . $this->oItem->searchLink . '" title="Search for ' . $this->oItem->prefLabel . '">articles on <strong>' . $this->oItem->prefLabel . '</strong></a> in this blog.</p>';
 		}
 
 		$sContent .= '</div>';
@@ -128,27 +148,5 @@ class PPThesaurusTemplate {
 		}
 
 		return $this->oItem->prefLabel;
-	}
-
-
-	public function showItemList ($aAtts) {
-		$aList 		= $this->oPPTM->getList($_GET['filter']);
-		$iCount 	= count($aList);
-		$sContent 	= '';
-		if ($iCount > 0) {
-			$sContent .= '<ul class="PPThesaurusList">';
-			$i = 1;
-			foreach($aList as $oConcept) {
-				if ($oConcept->rel != PPThesaurusManager::$sSkosUri . 'hiddenLabel') {
-					$sClass = ($i == 1) ? ' class="first"' : ($i == $iCount ? ' class="last"' : '');
-					$sDefinition = $this->oPPTM->getDefinition($oConcept->uri, $oConcept->definition, true);
-					$sContent .= '<li' . $sClass . '>' . pp_thesaurus_get_link($oConcept->label, $oConcept->uri, $oConcept->prefLabel, $sDefinition, true) . '</li>';
-					$i++;
-				}
-			}
-			$sContent .= '</ul>';
-		}
-
-		return $sContent;
 	}
 }

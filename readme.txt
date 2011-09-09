@@ -53,6 +53,9 @@ You will need a SKOS thesaurus management tool like PoolParty (http://poolparty.
 = How can I update the glossary? =
 Simply load the updated thesaurus again (admin area: *Settings* -> *Climate change glossary*). The old thesaurus will be overwritten. New or updated concepts will be recognized immediately by the link generator.
 
+= How con I exclude certain text sections from parsing? =
+Enclose such text sections with preceding [ccg-noparse] and a final [/ccg-noparse]
+
 = How to style the tooltip? =
 This tooltip consists of a CSS file and three PNG pictures which can be found in the plugin directory (*js/unitip/*). Two pictures consist of the top and bottom edge with and without the pointer and the third picture consists of the middle part.
 To style this tooltip, the three pictures can be interchanged and the CSS file adjusted accordingly.
@@ -64,6 +67,10 @@ To style this tooltip, the three pictures can be interchanged and the CSS file a
 
 
 == Changelog ==
+= 1.2 =
+New, simplified configuration setting page
+Performance problems resolved
+Few Bugs fixed
 = 1.1 =
 Bug with the import from SPARQL endpoint is resolved
 = 1.0 =
