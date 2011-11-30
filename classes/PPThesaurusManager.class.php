@@ -8,12 +8,18 @@ function getWpPrefix () {
 
 class PPThesaurusManager {
 
-	protected static $oInstance;
-	public static $sSkosUri = 'http://www.w3.org/2004/02/skos/core#';
+	protected static 	$oInstance;
+	public static 		$sSkosUri = 'http://www.w3.org/2004/02/skos/core#';
+	protected static 	$PLACEHOLDER_CONTENT = 'pp-contentplaceholder';
+	protected static 	$PLACEHOLDER_TERM = 'pp-termplaceholder';
+	protected static 	$PLACEHOLDER_TAG = 'pp-tagplaceholder';
 
 	protected $oStore;
-	protected $aList;
+	protected $bStoreExists;
+	protected $aConceptList;
 	protected $sLanguage;
+	protected $sDefaultLanguage;
+	protected $aAvailableLanguages;
 	protected $aNoParseContent;
 
 
@@ -38,6 +44,7 @@ class PPThesaurusManager {
 		$this->aAvailableLanguages  = array();
 		$this->aNoParseContent		= array();
 	}
+
 
 	public static function getInstance () {
 		if(!isset(self::$oInstance)){
@@ -65,6 +72,7 @@ class PPThesaurusManager {
 		return $this->bStoreExists;
 	}
 
+
 	public static function importFromEndpoint () {
 		$aConfig = array(
 			'remote_store_endpoint'	=> PP_THESAURUS_ENDPOINT,
@@ -90,6 +98,7 @@ class PPThesaurusManager {
 
 		self::importFromEndpointLoop($oEPStore, $oARCStore);
 	}
+
 
 	protected static function importFromEndpointLoop (&$oEPStore, &$oARCStore, $iCounter=0) {
 		$iLimit = 1000;
@@ -174,7 +183,6 @@ class PPThesaurusManager {
 		}
 	}
 
-
 	public function cutContent ($aAttr, $sContent=null) {
 		if (is_null($sContent)) {
 			return '';
@@ -185,7 +193,7 @@ class PPThesaurusManager {
 
 		$iCount = count($this->aNoParseContent);
 		$this->aNoParseContent[] = do_shortcode($sContent);
-		return "<pp-contentplaceholder>$iCount</pp-contentplaceholder>";
+		return '<' . self::$PLACEHOLDER_CONTENT . '>' . $iCount . '</' . self::$PLACEHOLDER_CONTENT . '>';
 	}
 
 
@@ -195,20 +203,29 @@ class PPThesaurusManager {
 		}
 		$aConcepts = $this->getConcepts();
 
-		// Die vohandenen HTML-Tags suchen und mit einem Placeholder tauschen, damit sie nicht ueberschrieben werden
-		$aSearches = array(
-			"<a [^>]+>(.*?)<\/a>",				// match all html links
-			"<select [^>]+>(.*?)<\/select>",	// match all dropdown lists
-			"<[a-z][a-z0-9]*\s+\S+=[^>]+>"		// match all tags with attributes
-		);
-		preg_match_all('/' . join('|', $aSearches) . '/i', $sContent, $aMatches);
-		$aTagMatches = $aMatches[0];
+		// Entsprechende HTML-Tags suchen (die Probleme machen koennten) und mit einem Placeholder ersetzen
+		$oDom = new simple_html_dom();
+		$oDom->load($sContent);
+		$oTags = $oDom->find('a, label, map, select, sub, sup');
+		$aTagMatches = array();
+		$i = 0;
+		foreach ($oTags as $oTag) {
+			$aTagMatches[] = $oTag->outertext;
+			$oTag->outertext = '<' . self::$PLACEHOLDER_TAG . '>' . $i++ . '</' . self::$PLACEHOLDER_TAG . '>';
+		}
+		$sContent = $oDom->save();
+
+		// Die vohandenen HTML Start-Tags mit Attributen suchen und mit einem Placeholder ersetzen, damit sie nicht ueberschrieben werden
+		$sSearch = "<\w+(\s+\w+(\s*=\s*(?:\".*?\"|'.*?'|[^'\">\s]+))?)+\s*/?>";				// match all start tags with attributes
+		preg_match_all('#' . $sSearch . '#i', $sContent, $aMatches);
+		$aTagMatches = array_merge($aTagMatches, $aMatches[0]);
 		$iTagMatchCount = count($aTagMatches);
-		for ($i=0; $i<$iTagMatchCount; $i++) {
-		    $sContent = str_replace($aTagMatches[$i], "<pp-linkplaceholder>$i</pp-linkplaceholder>", $sContent);
+		for (; $i<$iTagMatchCount; $i++) {
+			$sReplace = '<' . self::$PLACEHOLDER_TAG . '>' . $i . '</' . self::$PLACEHOLDER_TAG . '>';
+		    $sContent = str_replace($aTagMatches[$i], $sReplace, $sContent);
 		}
 
-		// Um die gefundenen Begriffe im Content einen speziellen Tag legen (nur dem 1. Fund pro Begriff)
+		// Die Begriffe im Content suchen und mit einem Placeholder ersetzen (nur beim 1. Fund pro Begriff)
 		$aTermMatches = array();
 		foreach($aConcepts as $iId => $oConcept){
 			$sLabel = addcslashes($oConcept->label, '/.*+()');
@@ -219,28 +236,33 @@ class PPThesaurusManager {
 			}
 			if (preg_match($sLabel, $sContent, $aMatches)) {
 				$aTermMatches[$iId] = $aMatches[2];
-				$sPlaceholder = "$1<pp-termplaceholder>$iId</pp-termplaceholder>$3";
+				$sPlaceholder = '$1<' . self::$PLACEHOLDER_TERM . '>' . $iId . '</' . self::$PLACEHOLDER_TERM . '>$3';
 				$sContent = preg_replace($sLabel, $sPlaceholder, $sContent, 1);
 			}
 		}
 
-		foreach ($aTermMatches as $iId => $sMatch) {
-			$oConcept 		= $aConcepts[$iId];
-			$sDefinition 	= $this->getDefinition($oConcept->uri, $oConcept->definition, true);
-			$sPlaceholder 	= "<pp-termplaceholder>$iId</pp-termplaceholder>";
-			$sLink 			= pp_thesaurus_get_link($sMatch, $oConcept->uri, $oConcept->prefLabel, $sDefinition);
-			$sContent 		= str_replace($sPlaceholder, $sLink, $sContent);
+		// Alle Placeholder wieder herstellen
+		$oDom->clear();
+		$oDom->load($sContent);
+		$oTags = $oDom->find(self::$PLACEHOLDER_CONTENT . ', ' . self::$PLACEHOLDER_TERM . ', ' . self::$PLACEHOLDER_TAG);
+		foreach ($oTags as $oTag) {
+			$iNumber = (int)$oTag->innertext;
+			switch ($oTag->tag) {
+				case self::$PLACEHOLDER_CONTENT:
+					$oTag->outertext = $this->aNoParseContent[$iNumber];
+					break;
+				case self::$PLACEHOLDER_TERM:
+					$oConcept 		= $aConcepts[$iNumber];
+					$sDefinition 	= $this->getDefinition($oConcept->uri, $oConcept->definition, true);
+					$sLink 			= pp_thesaurus_get_link($aTermMatches[$iNumber], $oConcept->uri, $oConcept->prefLabel, $sDefinition);
+					$oTag->outertext = $sLink;
+					break;
+				case self::$PLACEHOLDER_TAG:
+					$oTag->outertext = $aTagMatches[$iNumber];
+					break;
+			}
 		}
-
-		// Alle Placeholder wieder richtig stellen
-		for ($i=0; $i<$iTagMatchCount; $i++) {
-		    $sContent = str_replace("<pp-linkplaceholder>$i</pp-linkplaceholder>", $aTagMatches[$i], $sContent);
-		}
-
-		// Alle nicht geparsten Content-Teile wieder rein stellen
-		foreach($this->aNoParseContent as $iId => $sNoParsedContent) {
-			$sContent = str_replace("<pp-contentplaceholder>$iId</pp-contentplaceholder>", $sNoParsedContent, $sContent);
-		}
+		$sContent = $oDom->save();
 
 		return $sContent;
 	}
@@ -249,13 +271,13 @@ class PPThesaurusManager {
 	protected function parseAllowed () {
 		global $post;
 
-		// is the content for a feed?
-		if (is_feed()) {
+		// is automatic linking disabled?
+		if (get_option('PPThesaurusPopup') == 2) {
 			return false;
 		}
 
-		// is automatic linking disabled?
-		if (get_option('PPThesaurusPopup') == 2) {
+		// is the content for a feed or an archive?
+		if (is_feed() || is_archive()) {
 			return false;
 		}
 
@@ -350,6 +372,7 @@ class PPThesaurusManager {
 		return trim($aRow['description']);
 	}
 
+
 	protected function truncate($sText, $iLength = 300, $sEtc = ' ...', $bBreakWords = false) {
 		if ($iLength == 0) {
 			return '';
@@ -365,6 +388,7 @@ class PPThesaurusManager {
 			return $sText;
 		}
 	}
+
 
 	public function exists () {
 		$aList = $this->getConcepts();
@@ -423,6 +447,7 @@ class PPThesaurusManager {
 		$this->setLanguage();
 		if (empty($this->sLanguage) || empty($sUri)) return null;
 
+		$sUri = urldecode($sUri);
 		$sQuery = "
 			PREFIX skos: <" . self::$sSkosUri . ">
 
@@ -453,9 +478,9 @@ class PPThesaurusManager {
 		$aHiddenLables 	= array();
 		$aDefinitions 	= array();
 		$bWithRelations = true;
+		$oItem->uri 	= $sUri;
 
 		foreach ($aRows as $aRow) {
-			$oItem->uri = $sUri;
 			$oItem->prefLabel = trim($aRow['prefLabel']);
 			if (isset($aRow['altLabel'])) {
 				$aAltLabels[] = trim($aRow['altLabel']);
@@ -582,7 +607,7 @@ class PPThesaurusManager {
 		} elseif (!empty($aDefinitions['other'])) {
 			$oItem->definition = join('<br />', array_unique($aDefinitions['other']));
 		}
-		$aResult[] 			= $oItem;
+		$aResult[] = $oItem;
 
 		return $aResult;
 	}
@@ -601,7 +626,7 @@ class PPThesaurusManager {
 					?concept a skos:Concept .
 					?concept ?rel ?label .
 					OPTIONAL { ?concept skos:definition ?definition . }
-					OPTIONAL { ?concept skos:notation ?notation. }
+					OPTIONAL { ?concept skos:notation ?notation . }
 
 					{ ?concept skos:prefLabel ?label . }
 					UNION
@@ -784,6 +809,58 @@ class PPThesaurusManager {
 		usort($this->aConceptList, array($this, 'sortByLabel'));
 
 		return $this->aConceptList;
+	}
+
+
+	public function searchConcepts ($sString, $iLimit, $sUrl) {
+		$sString = trim($sString);
+
+		if (empty($sString)) {
+			return array();
+		}
+
+		$this->setLanguage();
+		if (empty($this->sLanguage)) {
+			return array();
+		}
+
+		$sQuery = "
+			PREFIX skos:<http://www.w3.org/2004/02/skos/core#>
+
+			SELECT DISTINCT ?concept ?label 
+			WHERE {
+				?concept a skos:Concept.
+				{ 
+					?concept skos:prefLabel ?label FILTER(regex(str(?label),'$sString','i') && lang(?label) = '" . $this->sLanguage . "').
+				} UNION {
+					?concept skos:altLabel ?label FILTER(regex(str(?label),'$sString','i') && lang(?label) = '" . $this->sLanguage . "').
+				}
+				OPTIONAL { ?concept skos:notation ?notation. }
+				
+				FILTER(!bound(?notation)).
+			}
+			ORDER BY ASC(?label)
+			LIMIT $iLimit";
+
+		$aRows = $this->oStore->query($sQuery, 'rows');
+		if ($this->oStore->getErrors() || count($aRows) <= 0) {
+			return array();
+		}
+
+		$aListStart 	= array();
+		$aListMiddle 	= array();
+		foreach ($aRows as $aData) {
+			$sData = $aData['label'] . '|' . $sUrl . '?uri=' . $aData['concept'];
+			if (stripos($aData['label'], $sString) > 0) {
+				$aListMiddle[] = $sData;
+			} else {
+				$aListStart[] = $sData;
+			}
+		}
+
+		$aList = array_merge($aListStart, $aListMiddle);
+
+		return $aList;
 	}
 
 

@@ -23,7 +23,7 @@ class PPThesaurusTemplate {
 					$this->oItem = $this->oPPTM->getItem($_GET['uri']);
 				}
 			} catch (Exception $e) {
-				return '<p>' . _e('An error has occurred while reading concept data.', 'Poolparty Thesaurus') . '</p>';
+				return '<p>' . __('An error has occurred while reading concept data.', 'Poolparty Thesaurus') . '</p>';
 			}
 
 			$iChar = ord(strtoupper($this->oItem->prefLabel));
@@ -128,6 +128,16 @@ class PPThesaurusTemplate {
 	}
 
 
+	public function setWPTitle ($sTitle, $sSep, $sSepLocation) {
+		$sNewTitle = $this->setTitle($sTitle);
+		if ($sNewTitle == $sTitle) {
+			return $sTitle;
+		}
+
+		return 'Definition of ' . $sNewTitle;
+	}
+
+
 	public function setTitle ($sTitle) {
 	    $iPPThesaurusId = get_option('PPThesaurusId');
 	    $aChildren  = get_children(array('numberposts'  => 1,
@@ -144,7 +154,7 @@ class PPThesaurusTemplate {
 				$this->oItem = $this->oPPTM->getItem($_GET['uri']);
 			}
 		} catch (Exception $e) {
-			return 'Error';
+			return $sTitle;
 		}
 
 		return $this->oItem->prefLabel;

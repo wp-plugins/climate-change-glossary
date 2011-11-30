@@ -5,7 +5,7 @@
 // http://qrayg.com
 
 var uniTipTag = "a"; //Which tag do you want to uniTip-ize? Keep it lowercase. No spaces around commas.//
-var uniTipClass = "ppThesaurus"; //Which classes do you want to uniTip-ize? If you leave this blank, then all the tags designated above will get uniTip-ized. Match case. No spaces around commas.
+var uniTipClass = "PPThesaurus"; //Which classes do you want to uniTip-ize? If you leave this blank, then all the tags designated above will get uniTip-ized. Match case. No spaces around commas.
 
 var uniTipX = 5; // X offset from cursor//
 var uniTipY = 17; // Y offset from cursor//

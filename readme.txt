@@ -1,6 +1,6 @@
 === climate change glossary ===
 Author URI: http://www.reegle.info
-Plugin URI: http://poolparty.punkt.at
+Plugin URI: http://poolparty.biz
 Contributors: reegle
 Tags: renewable energy, energy efficiency, climate development, renewables, efficiency, glossary, thesaurus, poolparty, skos, rdf
 Requires at least: 2.9
@@ -15,8 +15,15 @@ With this plugin any SKOS thesaurus can be imported into your Wordpress blog (vi
 On two pages (automatically generated) the whole thesaurus can be displayed and used as a glossary on your blog. One page is the main page of the glossary which displays all concepts with their preferred labels and their alternative labels (synonyms). The list of concepts is displayed in an alphabetical order and can be filtered by their first letters. The second page represents the detail view of each concept. All kinds of labels and relations (prefLabel, altLabel, hiddenLabel, definition, scopNote, broader, narrower und related) of a given term (concept) can be loaded and displayed.
 Each post is analysed automatically to find words and phrases maching labels of a concept (prefLabel, altLabel or hiddenLabel) in the thesaurus. The first hit will automatically be highlighted. A mousover tooltip shows the short description of the term/phrase and the link points to the more detailed description on the glossary page.
 
+= What's new? =
+* Updating the plugin via the wordpress admin interface has been simplified. The plugin now gets the ARC2-tripelstore and installs it automatically without need to intervene  manually.
+* There is a new sidebar-widget which incorporates a search field including autocomplete. This autocomplete service suggests terms from the glossary. Once such a term is chosen, one is automatically connected to the webpage describing the term. The widget can be pulled into any sidebar (depending on the theme) from the sub-section of *appearance/widgets*.
+* There is a new shortcode with which specific parts of the content can be excluded from automatically being linked. The shortcode is called ppt-noparse, and it is opened with *[ppt-noparse]* and closed with *[/ppt-noparse]*. Automatic linking is disabled for any text between the code.
+* Automatic finding and linking of concepts in running content can be totally disabled under settings. The glossary area is still present and can be reached via the glossary link and the sidebar widget.
+
+
 Thanks to Benjamin Nowack: The thesaurus is imported into the system and is queried via ARC2 (https://github.com/semsol/arc2).
-Thanks to rduffy (http://wordpress.org/extend/plugins/profile/rduffy). His *Glossary* Plugin (http://wordpress.org/extend/plugins/automatic-glossary) inpired me, and I was able to develop this plugin on top of his ideas.
+Thanks to rduffy (http://wordpress.org/extend/plugins/profile/rduffy). His *Glossary* Plugin (http://wordpress.org/extend/plugins/automatic-glossary) inspired me, and I was able to develop this plugin on top of his ideas.
 
 Works with PHP 5, MySQL 5 und ARC2
 
@@ -26,10 +33,8 @@ Install using WordPress:
 
 1. Log in and go to *Plugins* and click on *Add New*.
 2. Search for *climate change glossary* and hit the *Install Now* link in the results. WordPress will install it.
-3. Download ARC2 from https://github.com/semsol/arc2 and unzip it.
-4. Open the unziped folder and upload the entire content into the */wp-content/plugins/climate-change-glossary/arc/* directory.
-5. From the Plugin Management page in Wordpress, activate the *Climate change glossary* plugin.
-6. Go to *Settings* -> *Climate change glossary* in Wordpress and click on *Import/Update Thesaurus*. Uploading the thesaurus can take a few minutes (4-5 minutes). Please remain patient and don*t interrupt the procedure.
+3. From the Plugin Management page in Wordpress, activate the *Climate change glossary* plugin.
+4. Go to *Settings* -> *Climate change glossary* in Wordpress and click on *Import/Update Thesaurus*. Uploading the thesaurus can take a few minutes (4-5 minutes). Please remain patient and don*t interrupt the procedure.
 
 Install manually:
 
@@ -48,13 +53,13 @@ No. It can be called whatever you like. You can enter a content if you like, but
 No. It can be called whatever you like. You can enter a content if you like, but be careful with the shortcuts.
 
 = How do I add a thesaurus item?  =
-You will need a SKOS thesaurus management tool like PoolParty (http://poolparty.punkt.at/) to add/modify terms. The glossary is generated automatically from the imported thesaurus.
-
-= How can I update the glossary? =
-Simply load the updated thesaurus again (admin area: *Settings* -> *Climate change glossary*). The old thesaurus will be overwritten. New or updated concepts will be recognized immediately by the link generator.
+You will need a SKOS thesaurus management tool like PoolParty (http://poolparty.biz) to add/modify terms. The glossary is generated automatically from the imported thesaurus.
 
 = How con I exclude certain text sections from parsing? =
 Enclose such text sections with preceding [ccg-noparse] and a final [/ccg-noparse]
+
+= How can I update the glossary? =
+Simply load the updated thesaurus again (admin area: *Settings* -> *Climate change glossary*). The old thesaurus will be overwritten. New or updated concepts will be recognized immediately by the link generator.
 
 = How to style the tooltip? =
 This tooltip consists of a CSS file and three PNG pictures which can be found in the plugin directory (*js/unitip/*). Two pictures consist of the top and bottom edge with and without the pointer and the third picture consists of the middle part.
@@ -67,11 +72,22 @@ To style this tooltip, the three pictures can be interchanged and the CSS file a
 
 
 == Changelog ==
+= 1.3 =
+* Updating the plugin via the wordpress admin interface has been simplified. The plugin now gets the ARC2-tripelstore and installs it automatically without need to intervene  manually.
+* There is a new sidebar-widget which incorporates a search field including autocomplete. This autocomplete service suggests terms from the glossary. Once such a term is chosen, one is automatically connected to the webpage describing the term. The widget can be pulled into any sidebar (depending on the theme) from the sub-section of *appearance/widgets*.
+* There is a new shortcode with which specific parts of the content can be excluded from automatically being linked. The shortcode is called ppt-noparse, and it is opened with *[ppt-noparse]* and closed with *[/ppt-noparse]*. Automatic linking is disabled for any text between the code.
+* Automatic finding and linking of concepts in running content can be totally disabled under settings. The glossary area is still present and can be reached via the glossary link and the sidebar widget.
+* The procedure for the automatic linking has been stabilized and improved
+* Bugfixes
+
 = 1.2 =
-New, simplified configuration setting page
-Performance problems resolved
-Few Bugs fixed
+* New, simplified configuration setting page
+* Performance problems resolved
+* Few Bugs fixed
+
 = 1.1 =
-Bug with the import from SPARQL endpoint is resolved
+* Bug with the import from SPARQL endpoint is resolved
+
 = 1.0 =
-Initial release
+* Initial release
+
