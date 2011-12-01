@@ -129,7 +129,8 @@ class PPThesaurusTemplate {
 
 
 	public function setWPTitle ($sTitle, $sSep, $sSepLocation) {
-		$sNewTitle = $this->setTitle($sTitle);
+		$sTitle		= trim($sTitle);
+		$sNewTitle 	= $this->setTitle($sTitle);
 		if ($sNewTitle == $sTitle) {
 			return $sTitle;
 		}
