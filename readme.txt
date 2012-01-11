@@ -72,6 +72,9 @@ To style this tooltip, the three pictures can be interchanged and the CSS file a
 
 
 == Changelog ==
+= 1.3.2 =
+* Widget description added
+
 = 1.3.1 =
 * Fixed small error in the header title
 

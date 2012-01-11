@@ -3,7 +3,7 @@
 Plugin Name: Climate change glossary
 Plugin URI: http://poolparty.biz
 Description: This plugin imports a SKOS thesaurus via <a href="https://github.com/semsol/arc2">ARC2</a>. It highlighs terms and generates links automatically in any page which contains terms from the thesaurus.
-Version: 1.3.1
+Version: 1.3.2
 Author: reegle.info
 Author URI: http://www.reegle.info
 */
@@ -138,7 +138,7 @@ function pp_thesaurus_init () {
 
 	// Initialise the sidebar widget
 	$sTitle = __('Glossary Search');
-	$sDescription = __('hier kommt noch eine Beschreibung');
+	$sDescription = __('Search field for the climate glossary');
 	if (function_exists('wp_register_sidebar_widget')) {
 		wp_register_sidebar_widget('pp_thesaurus_sidebar_search', $sTitle, 'pp_thesaurus_sidebar', array('description' => $sDescription));
 		wp_register_widget_control('pp_thesaurus_sidebar_search', $sTitle, 'pp_thesaurus_sidebar_control');
