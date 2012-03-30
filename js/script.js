@@ -1,14 +1,16 @@
 
 jQuery(document).ready(function ($) {
-	$("#pp_thesaurus_input_term").clearField().autocomplete(pp_thesaurus_suggest_url, {
-		minChars:		2,
-		matchContains:	true,
-		cacheLength:	10,
-		max:			15,
-		scroll:			false
-	}).result(function (event, item) {
-		location.href = item[1];
-	});
+	if ($("#pp_thesaurus_input_term").length && typeof(pp_thesaurus_suggest_url) == "string") {
+		$("#pp_thesaurus_input_term").clearField().autocomplete(pp_thesaurus_suggest_url, {
+			minChars:		2,
+			matchContains:	true,
+			cacheLength:	10,
+			max:			15,
+			scroll:			false
+		}).result(function (event, item) {
+			location.href = item[1];
+		});
+	}
 });
 
 

@@ -21,6 +21,7 @@ class PPThesaurusManager {
 	protected $sDefaultLanguage;
 	protected $aAvailableLanguages;
 	protected $aNoParseContent;
+	protected $aBlacklist;
 
 
 
@@ -43,6 +44,7 @@ class PPThesaurusManager {
 		$this->sDefaultLanguage     = '';
 		$this->aAvailableLanguages  = array();
 		$this->aNoParseContent		= array();
+		$this->aBlacklist			= NULL;
 	}
 
 
@@ -196,12 +198,12 @@ class PPThesaurusManager {
 		return '<' . self::$PLACEHOLDER_CONTENT . '>' . $iCount . '</' . self::$PLACEHOLDER_CONTENT . '>';
 	}
 
-
 	public function parse ($sContent) {
 		if (!$this->parseAllowed()) {
 			return $sContent;
 		}
-		$aConcepts = $this->getConcepts();
+		$aConcepts 	= $this->getConcepts();
+		$aBlacklist	= $this->getBlacklist();
 
 		// Entsprechende HTML-Tags suchen (die Probleme machen koennten) und mit einem Placeholder ersetzen
 		$oDom = new simple_html_dom();
@@ -226,18 +228,19 @@ class PPThesaurusManager {
 		}
 
 		// Die Begriffe im Content suchen und mit einem Placeholder ersetzen (nur beim 1. Fund pro Begriff)
-		$aTermMatches = array();
-		foreach($aConcepts as $iId => $oConcept){
-			$sLabel = addcslashes($oConcept->label, '/.*+()');
+		$aTermMatches 	= array();
+		foreach($aConcepts as $iId => $oConcept) {
+			$sLabel = strtolower($oConcept->label);
+			$sPattern = addcslashes($oConcept->label, '/.*+()');
 			// Ist der Label in Grossbuchstaben, dann auf casesensitive schalten
-			$sLabel = '/(\W)(' . $sLabel . ')(\W)/';
-			if (strcmp($sLabel, strtoupper($sLabel))) {
-				$sLabel .= 'i';
+			$sPattern = '/(\W)(' . $sPattern . ')(\W)/';
+			if (strcmp($sPattern, strtoupper($sPattern))) {
+				$sPattern .= 'i';
 			}
-			if (preg_match($sLabel, $sContent, $aMatches)) {
+			if (!in_array($sLabel, $aBlacklist) && preg_match($sPattern, $sContent, $aMatches)) {
 				$aTermMatches[$iId] = $aMatches[2];
 				$sPlaceholder = '$1<' . self::$PLACEHOLDER_TERM . '>' . $iId . '</' . self::$PLACEHOLDER_TERM . '>$3';
-				$sContent = preg_replace($sLabel, $sPlaceholder, $sContent, 1);
+				$sContent = preg_replace($sPattern, $sPlaceholder, $sContent, 1);
 			}
 		}
 
@@ -271,7 +274,7 @@ class PPThesaurusManager {
 	protected function parseAllowed () {
 		global $post;
 
-		// is automatic linking disabled?
+		// is automated linking disabled?
 		if (get_option('PPThesaurusPopup') == 2) {
 			return false;
 		}
@@ -883,5 +886,19 @@ class PPThesaurusManager {
 
 	protected function sortByLabel ($a, $b) {
 		return strcasecmp($a->prefLabel, $b->prefLabel);
+	}
+
+	protected function getBlacklist () {
+		if (!is_array($this->aBlacklist)) {
+			$this->aBlacklist = array();
+			if (($sBlacklist = stripslashes(get_option('PPThesaurusBlacklist'))) != '') {
+				$this->aBlacklist = array_map(array($this, 'cleanBlacklistTerm'), split(',', $sBlacklist));
+			}
+		}
+		return $this->aBlacklist;
+	}
+
+	protected function cleanBlacklistTerm ($sTerm) {
+		return trim(strtolower($sTerm));
 	}
 }

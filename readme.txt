@@ -16,10 +16,11 @@ On two pages (automatically generated) the whole thesaurus can be displayed and 
 Each post is analysed automatically to find words and phrases maching labels of a concept (prefLabel, altLabel or hiddenLabel) in the thesaurus. The first hit will automatically be highlighted. A mousover tooltip shows the short description of the term/phrase and the link points to the more detailed description on the glossary page.
 
 = What's new? =
+* It is now possible to include a list of glossary terms in the settings which will then be excluded from automated linking.
 * Updating the plugin via the wordpress admin interface has been simplified. The plugin now gets the ARC2-tripelstore and installs it automatically without need to intervene  manually.
 * There is a new sidebar-widget which incorporates a search field including autocomplete. This autocomplete service suggests terms from the glossary. Once such a term is chosen, one is automatically connected to the webpage describing the term. The widget can be pulled into any sidebar (depending on the theme) from the sub-section of *appearance/widgets*.
-* There is a new shortcode with which specific parts of the content can be excluded from automatically being linked. The shortcode is called ppt-noparse, and it is opened with *[ppt-noparse]* and closed with *[/ppt-noparse]*. Automatic linking is disabled for any text between the code.
-* Automatic finding and linking of concepts in running content can be totally disabled under settings. The glossary area is still present and can be reached via the glossary link and the sidebar widget.
+* There is a new shortcode with which specific parts of the content can be excluded from automatically being linked. The shortcode is called ccg-noparse, and it is opened with *[ccg-noparse]* and closed with *[/ccg-noparse]*. Automated linking is disabled for any text between the code.
+* Automated finding and linking of concepts in running content can be totally disabled under settings. The glossary area is still present and can be reached via the glossary link and the sidebar widget.
 
 
 Thanks to Benjamin Nowack: The thesaurus is imported into the system and is queried via ARC2 (https://github.com/semsol/arc2).
@@ -55,8 +56,11 @@ No. It can be called whatever you like. You can enter a content if you like, but
 = How do I add a thesaurus item?  =
 You will need a SKOS thesaurus management tool like PoolParty (http://poolparty.biz) to add/modify terms. The glossary is generated automatically from the imported thesaurus.
 
-= How con I exclude certain text sections from parsing? =
+= How can I exclude certain text sections from automated linking? =
 Enclose such text sections with preceding [ccg-noparse] and a final [/ccg-noparse]
+
+= How can I exclude certain glossary terms from automated linking? =
+In the settings (admin area: *Settings* -> *Climate change glossary*) under "Terms excluded from automated linking" you can now add a list of glossary terms to be excluded from automated linking. 
 
 = How can I update the glossary? =
 Simply load the updated thesaurus again (admin area: *Settings* -> *Climate change glossary*). The old thesaurus will be overwritten. New or updated concepts will be recognized immediately by the link generator.
@@ -72,6 +76,10 @@ To style this tooltip, the three pictures can be interchanged and the CSS file a
 
 
 == Changelog ==
+= 1.4 =
+* It is now possible to include a list of glossary terms in the settings which will then be excluded from automated linking.
+* Bug fixes (thanks rtweedie (http://wordpress.org/support/profile/rtweedie) for the detailed error report)
+
 = 1.3.2 =
 * Widget description added
 
@@ -81,9 +89,9 @@ To style this tooltip, the three pictures can be interchanged and the CSS file a
 = 1.3 =
 * Updating the plugin via the wordpress admin interface has been simplified. The plugin now gets the ARC2-tripelstore and installs it automatically without need to intervene  manually.
 * There is a new sidebar-widget which incorporates a search field including autocomplete. This autocomplete service suggests terms from the glossary. Once such a term is chosen, one is automatically connected to the webpage describing the term. The widget can be pulled into any sidebar (depending on the theme) from the sub-section of *appearance/widgets*.
-* There is a new shortcode with which specific parts of the content can be excluded from automatically being linked. The shortcode is called ppt-noparse, and it is opened with *[ppt-noparse]* and closed with *[/ppt-noparse]*. Automatic linking is disabled for any text between the code.
-* Automatic finding and linking of concepts in running content can be totally disabled under settings. The glossary area is still present and can be reached via the glossary link and the sidebar widget.
-* The procedure for the automatic linking has been stabilized and improved
+* There is a new shortcode with which specific parts of the content can be excluded from automatically being linked. The shortcode is called ppt-noparse, and it is opened with *[ppt-noparse]* and closed with *[/ppt-noparse]*. Automated linking is disabled for any text between the code.
+* Automated finding and linking of concepts in running content can be totally disabled under settings. The glossary area is still present and can be reached via the glossary link and the sidebar widget.
+* The procedure for the automated linking has been stabilized and improved
 * Bugfixes
 
 = 1.2 =

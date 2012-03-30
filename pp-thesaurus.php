@@ -3,7 +3,7 @@
 Plugin Name: Climate change glossary
 Plugin URI: http://poolparty.biz
 Description: This plugin imports a SKOS thesaurus via <a href="https://github.com/semsol/arc2">ARC2</a>. It highlighs terms and generates links automatically in any page which contains terms from the thesaurus.
-Version: 1.3.2
+Version: 1.4
 Author: reegle.info
 Author URI: http://www.reegle.info
 */
@@ -33,7 +33,7 @@ Author URI: http://www.reegle.info
 define('PP_THESAURUS_PLUGIN_DIR', dirname(__FILE__));
 define('PP_THESAURUS_ENDPOINT', 'http://poolparty.reegle.info/PoolParty/sparql/glossary');
 define('PP_THESAURUS_DBPEDIA_ENDPOINT', 'http://sparql.reegle.info');
-define('PP_THESAURUS_ARC_URL', 'https://github.com/semsol/arc2/zipball/master');
+define('PP_THESAURUS_ARC_URL', 'https://github.com/semsol/arc2/tarball/master');
 
 
 /* includes */
@@ -62,6 +62,7 @@ if (file_exists(PP_THESAURUS_PLUGIN_DIR . '/arc/ARC2.php') || class_exists('ARC2
 		add_option('PPThesaurusUpdated',            '');                        // The last import/update date
 		add_option('PPThesaurusSidebarTitle', 		'Glossary Search');			// The title for the sidebar widget
 		add_option('PPThesaurusSidebarWidth', 		'100%');					// The width for the input field in the sidebar widget
+		add_option('PPThesaurusBlacklist', 			'');						// A list of terms excluded from automated linking
 
 		/* hooks */
 		add_action('init',			'pp_thesaurus_init');
@@ -92,31 +93,43 @@ function pp_thesaurus_install_arc () {
 		return false;
 	}
 
-	// download ARC2
-	$sZipFileName = PP_THESAURUS_PLUGIN_DIR . '/arc.zip';
-	$sZipContent = file_get_contents(PP_THESAURUS_ARC_URL);
-	file_put_contents($sZipFileName, $sZipContent);
+	$sDir = getcwd();
+	chdir(PP_THESAURUS_PLUGIN_DIR);
 
-	// unzip the file
-	$oZip = new ZipArchive;
-	if ($oZip->open($sZipFileName) === true) {
-		$oZip->extractTo(PP_THESAURUS_PLUGIN_DIR);
-		$oZip->close();
+	// download ARC2
+	$sTarFileName 	= 'arc.tar.gz';
+	$sCmd 			= 'wget --no-check-certificate -T 2 -t 1 -O ' . $sTarFileName . ' ' . PP_THESAURUS_ARC_URL . ' 2>&1';
+	$aOutput 		= array();
+	exec($sCmd, $aOutput, $iResult);
+	if ($iResult != 0) {
+		chdir($sDir);
+		return false;
 	}
 
-	// move the entire contents into the arc folder
-	@rmdir(PP_THESAURUS_PLUGIN_DIR . '/arc');
-	@unlink($sZipFileName);
+	// untar the file
+	$sCmd 		= 'tar -xvzf ' . $sTarFileName . ' 2>&1';
+	$aOutput 	= array();
+	exec($sCmd, $aOutput, $iResult);
+	if ($iResult != 0) {
+		chdir($sDir);
+		return false;
+	}
+
+	// delete old arc direcotry and tar file
+	@rmdir('arc');
+	@unlink($sTarFileName);
 
 	// rename the ARC2 folder to arc
-	$aFiles = scandir(PP_THESAURUS_PLUGIN_DIR);
-	$aDirs = array('.', '..', 'classes', 'css', 'js', 'languages');
-	foreach ($aFiles as $sFile) {
-		if (is_dir($sFile) && !in_array($sFile, $aDirs)) {
-			break;
-		}
+	$sCmd		= 'mv semsol-arc2-* arc 2>&1';
+	$aOutput 	= array();
+	exec($sCmd, $aOutput, $iResult);
+	if ($iResult != 0) {
+		chdir($sDir);
+		return false;
 	}
-	rename(PP_THESAURUS_PLUGIN_DIR . '/' . $sFile, PP_THESAURUS_PLUGIN_DIR . '/arc');
+	
+	chdir($sDir);
+	return true;
 }
 
 
@@ -190,6 +203,8 @@ function pp_thesaurus_settings_page ($sError='') {
 	$sVariable 	= 'sPopup' . $iPopup;
 	$$sVariable = 'checked="checked" ';
 
+	$sBlacklist = stripslashes(get_option('PPThesaurusBlacklist'));
+
 	$sUpdated 	= get_option('PPThesaurusUpdated');
 	$sDate = empty($sUpdated) ? 'undefined' : date('d.m.Y', $sUpdated);
 	$oPPTM = PPThesaurusManager::getInstance();
@@ -199,7 +214,7 @@ function pp_thesaurus_settings_page ($sError='') {
 		<h2><?php _e('Climate change glossary settings', 'pp-thesaurus'); ?></h2>
 	<?php
 	if (!empty($sError)) {
-		echo '<div id="message" class="error"><p><strong>' . $sError . '></strong></p></div>';
+		echo '<div id="message" class="error"><p><strong>' . $sError . '</strong></p></div>';
 	} elseif (isset($_POST['secureToken']) && empty($sError)) {
 		echo '<div id="message" class="updated fade"><p>Settings saved.</p>';
 		if ($pp_thesaurus_updated) {
@@ -212,15 +227,22 @@ function pp_thesaurus_settings_page ($sError='') {
 		<form method="post" action="">
 			<table class="form-table">
 				<tr valign="baseline">
-					<th scope="row"><?php _e('Options for automatic linking of recognized terms', 'pp-thesaurus'); ?></th>
+					<th scope="row"><?php _e('Options for automated linking of recognized terms', 'pp-thesaurus'); ?></th>
 					<td>
 						<input id="popup_1" type="radio" name="popup" value="1" <?php echo $sPopup1; ?>/>
 						<label for="popup_1"><?php _e('link and show description in tooltip',  'pp-thesaurus'); ?></label><br />
 						<input id="popup_0" type="radio" name="popup" value="0" <?php echo $sPopup0; ?>/>
 						<label for="popup_0"><?php _e('link without tooltip',  'pp-thesaurus'); ?></label><br />
 						<input id="popup_2" type="radio" name="popup" value="2" <?php echo $sPopup2; ?>/>
-						<label for="popup_2"><?php _e('automatic linking disabled',  'pp-thesaurus'); ?></label>
+						<label for="popup_2"><?php _e('automated linking disabled',  'pp-thesaurus'); ?></label>
 					</td>
+				</tr>
+				<tr valign="baseline">
+					<th scope="row"><?php _e('Terms excluded from automated linking'); ?></th>
+					<td>
+						<input type="text" class="regular-text" name="blacklist" value="<?php echo $sBlacklist; ?>"  />
+						<span class="description">(comma separated values)</span>
+					<td>
 				</tr>
 				<tr valign="baseline">
 	<?php
@@ -334,22 +356,26 @@ function pp_thesaurus_get_language_form () {
 
 
 function pp_thesaurus_settings_save () {
-	$sError = '';
+	$aError = array();
 	switch ($_POST['from']) {
 		case 'common_settings':
+			if (!preg_match('/^[-\w,_ ]*$/', $_POST['blacklist'])) {
+				$aError[] = __('Invalid characters in the comma separateed list.');
+			}
 			update_option('PPThesaurusPopup', $_POST['popup']);
 			update_option('PPThesaurusLanguage', join('#', $_POST['languages']));
+			update_option('PPThesaurusBlacklist', esc_html($_POST['blacklist']));
 			break;
 
 		case 'data_settings':
-			$sError = pp_thesaurus_import();
+			$aError[] = pp_thesaurus_import();
 			break;
 	}
 	if (get_option('PPThesaurusId') == 0) {
 		$iPageId = pp_thesaurus_add_pages();
 		update_option('PPThesaurusId', $iPageId);
 	}
-	return $sError;
+	return join('<br />', $aError);
 }
 
 function pp_thesaurus_add_pages() {
