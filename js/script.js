@@ -1,4 +1,5 @@
 
+jQuery.noConflict(); 
 jQuery(document).ready(function ($) {
 	if ($("#pp_thesaurus_input_term").length && typeof(pp_thesaurus_suggest_url) == "string") {
 		$("#pp_thesaurus_input_term").clearField().autocomplete(pp_thesaurus_suggest_url, {
@@ -14,7 +15,7 @@ jQuery(document).ready(function ($) {
 });
 
 
-(function($) {
+;(function($) {
 $.fn.extend({
 	clearField: function() {
 		var selVal = null;
@@ -37,5 +38,5 @@ $.fn.extend({
 		});
 	}
 });
-})(jQuery)
+})(jQuery);
 

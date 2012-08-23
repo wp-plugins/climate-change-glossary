@@ -6,11 +6,11 @@ if (!defined('ABSPATH')) {
 }
 
 require_once($sPath.'/wp-config.php');
-require_once('./classes/PPThesaurusManager.class.php');
-require_once('./classes/PPThesaurusItem.class.php');
+require_once(PP_THESAURUS_PLUGIN_DIR . 'classes/PPThesaurusManager.class.php');
+require_once(PP_THESAURUS_PLUGIN_DIR . 'classes/PPThesaurusItem.class.php');
+require_once(PP_THESAURUS_PLUGIN_DIR . 'classes/PPThesaurusPage.class.php');
 
-$sUrl			= pp_thesaurus_get_template_page();
 $oPPTManager 	= PPThesaurusManager::getInstance();
-$aConcepts		= $oPPTManager->searchConcepts($_GET['q'], 100, $sUrl);
+$aConcepts		= $oPPTManager->searchConcepts($_GET['q'], $_GET['lang'], 100);
 
 echo join("\n", $aConcepts);

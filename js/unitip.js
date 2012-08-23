@@ -19,17 +19,16 @@ var x=0, y=0, WinWidth=0, WinHeight=0, TipWidth=0, TipHeight=0, CapHeight=0, Poi
 // first, find all the correct elements
 initUnitip = function () {
 	var elementList = uniTipTag.split(",");
+	var elClassList = uniTipClass.split(",");
 	for(var j = 0; j < elementList.length; j++) {	
 		var elements = document.getElementsByTagName(elementList[j]);
 		
 		if(elements) {
 			for (var i = 0; i < elements.length; i ++) {
 				if (uniTipClass != '') {
-				
 					var elClass = elements[i].className;
-					var elClassList = uniTipClass.split(",");
 					
-					for (var h=0; h < elClassList.length; h++) { if (elClass.match(elClassList[h])) unitipize(elements[i]); }
+					for (var h = 0; h < elClassList.length; h++) { if (elClass.match(elClassList[h])) unitipize(elements[i]); }
 					
 				} else unitipize(elements[i]);
 			}

@@ -1140,7 +1140,7 @@ class simple_html_dom {
         // attributes
         do
         {
-            if ($this->char!==null && $space[0]==='') break;
+//            if ($this->char!==null && $space[0]==='') break;
             $name = $this->copy_until($this->token_equal);
             if ($guard===$this->pos) {
                 $this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next

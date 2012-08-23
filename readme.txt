@@ -4,7 +4,7 @@ Plugin URI: http://poolparty.biz
 Contributors: reegle
 Tags: renewable energy, energy efficiency, climate development, renewables, efficiency, glossary, thesaurus, poolparty, skos, rdf
 Requires at least: 2.9
-Tested up to: 3.1.3
+Tested up to: 3.4.1
 Stable tag: trunk
 
 This plugin imports a SKOS thesaurus, highlights terms and generates links automatically for any terms available in the thesaurus.
@@ -16,12 +16,13 @@ On two pages (automatically generated) the whole thesaurus can be displayed and 
 Each post is analysed automatically to find words and phrases maching labels of a concept (prefLabel, altLabel or hiddenLabel) in the thesaurus. The first hit will automatically be highlighted. A mousover tooltip shows the short description of the term/phrase and the link points to the more detailed description on the glossary page.
 
 = What's new? =
-* It is now possible to include a list of glossary terms in the settings which will then be excluded from automated linking.
-* Updating the plugin via the wordpress admin interface has been simplified. The plugin now gets the ARC2-tripelstore and installs it automatically without need to intervene  manually.
-* There is a new sidebar-widget which incorporates a search field including autocomplete. This autocomplete service suggests terms from the glossary. Once such a term is chosen, one is automatically connected to the webpage describing the term. The widget can be pulled into any sidebar (depending on the theme) from the sub-section of *appearance/widgets*.
-* There is a new shortcode with which specific parts of the content can be excluded from automatically being linked. The shortcode is called ccg-noparse, and it is opened with *[ccg-noparse]* and closed with *[/ccg-noparse]*. Automated linking is disabled for any text between the code.
-* Automated finding and linking of concepts in running content can be totally disabled under settings. The glossary area is still present and can be reached via the glossary link and the sidebar widget.
+* By caching of relevant concepts of a post / article the performance has been optimised when callinga post / article
+* The Plugin has been reworked to ensure the use in future WordPress versions
 
+= Features = 
+* It is possible to include a list of glossary terms in the settings which will then be excluded from automated linking.
+* There is a sidebar-widget which incorporates a search field including autocomplete. This autocomplete service suggests terms from the glossary. Once such a term is chosen, one is automatically connected to the webpage describing the term. The widget can be pulled into any sidebar (depending on the theme) from the sub-section of *Appearance/Widgets*.
+* There is a shortcode with which specific parts of the content can be excluded from automatically being linked. The shortcode is called ccg-noparse, and it is opened with *[ccg-noparse]* and closed with *[/ccg-noparse]*. Automated linking is disabled for any text between the code.
 
 Thanks to Benjamin Nowack: The thesaurus is imported into the system and is queried via ARC2 (https://github.com/semsol/arc2).
 Thanks to rduffy (http://wordpress.org/extend/plugins/profile/rduffy). His *Glossary* Plugin (http://wordpress.org/extend/plugins/automatic-glossary) inspired me, and I was able to develop this plugin on top of his ideas.
@@ -76,6 +77,10 @@ To style this tooltip, the three pictures can be interchanged and the CSS file a
 
 
 == Changelog ==
+= 2.0 =
+* By caching of relevant concepts of a post / article the performance has been optimised when callinga post / article
+* The Plugin has been reworked to ensure the use in future WordPress versions
+
 = 1.4 =
 * It is now possible to include a list of glossary terms in the settings which will then be excluded from automated linking.
 * Bug fixes (thanks rtweedie (http://wordpress.org/support/profile/rtweedie) for the detailed error report)
@@ -88,8 +93,8 @@ To style this tooltip, the three pictures can be interchanged and the CSS file a
 
 = 1.3 =
 * Updating the plugin via the wordpress admin interface has been simplified. The plugin now gets the ARC2-tripelstore and installs it automatically without need to intervene  manually.
-* There is a new sidebar-widget which incorporates a search field including autocomplete. This autocomplete service suggests terms from the glossary. Once such a term is chosen, one is automatically connected to the webpage describing the term. The widget can be pulled into any sidebar (depending on the theme) from the sub-section of *appearance/widgets*.
-* There is a new shortcode with which specific parts of the content can be excluded from automatically being linked. The shortcode is called ppt-noparse, and it is opened with *[ppt-noparse]* and closed with *[/ppt-noparse]*. Automated linking is disabled for any text between the code.
+* There is a new sidebar-widget which incorporates a search field including autocomplete. This autocomplete service suggests terms from the glossary. Once such a term is chosen, one is automatically connected to the webpage describing the term. The widget can be pulled into any sidebar (depending on the theme) from the sub-section of *Appearance/Widgets*.
+* There is a new shortcode with which specific parts of the content can be excluded from automatically being linked. The shortcode is called ccg-noparse, and it is opened with *[ccg-noparse]* and closed with *[/ccg-noparse]*. Automated linking is disabled for any text between the code.
 * Automated finding and linking of concepts in running content can be totally disabled under settings. The glossary area is still present and can be reached via the glossary link and the sidebar widget.
 * The procedure for the automated linking has been stabilized and improved
 * Bugfixes
