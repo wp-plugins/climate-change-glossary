@@ -77,8 +77,11 @@ To style this tooltip, the three pictures can be interchanged and the CSS file a
 
 
 == Changelog ==
+= 2.0.1 =
+* Small bug fix on autocomplete function
+
 = 2.0 =
-* By caching of relevant concepts of a post / article the performance has been optimised when callinga post / article
+* By caching of relevant concepts of a post / article the performance has been optimised when calling a post / article
 * The Plugin has been reworked to ensure the use in future WordPress versions
 
 = 1.4 =
