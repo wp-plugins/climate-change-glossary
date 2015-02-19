@@ -2,40 +2,26 @@
 
 class PPThesaurusCache {
 
-	public static function getConcepts ($aConcepts) {
-		$iPostId	= $GLOBALS['post']->ID;
-		$sContent	= $GLOBALS['post']->post_content;
-		$aCache 	= array();
+	public static function get ($iPostId) {
+		$aConceptList = get_post_meta($iPostId, 'pp-thesaurus-cache', true);
 
-		$aCache = get_post_meta($iPostId, 'pp-thesaurus-cache', true);
-		if (!is_array($aCache)) {
-			$aCache = array();
-			foreach($aConcepts as $iId => $oConcept){
-				$sPattern = addcslashes($oConcept->label, '/.*+()');
-				// Ist der Label in Grossbuchstaben, dann auf casesensitive schalten
-				$sPattern = '/(\W)(' . $sPattern . ')(\W)/';
-				if (strcmp($sPattern, strtoupper($sPattern))) {
-					$sPattern .= 'i';
-				}
-				if (preg_match($sPattern, $sContent, $aMatches)) {
-					$aCache[] = $oConcept;
-				}
-			}
-			update_post_meta($iPostId, 'pp-thesaurus-cache', $aCache);
-		}
-		return $aCache;
+		return is_array($aConceptList) ? $aConceptList : FALSE;
 	}
 
+	public static function put ($iPostId, $aConceptList) {
+		update_post_meta($iPostId, 'pp-thesaurus-cache', $aConceptList);
+	}
 
-	public static function deletePost ($iPostId) {
+	public static function delete ($iPostId) {
 		delete_post_meta($iPostId, 'pp-thesaurus-cache');
 	}
 
+	public static function clear () {
+		global $wpdb;
 
-	public static function deleteAll () {
-		$aAllPosts = get_posts('numberposts=-1&post_type=post&post_status=any');
-		foreach ($aAllPosts as $oPostInfo) {
-			delete_post_meta($oPostInfo->ID, 'pp-thesaurus-cache');
-		}
+		$query = "
+			DELETE FROM " . $wpdb->postmeta . "
+			WHERE meta_key = %s";
+		$wpdb->query($wpdb->prepare($query, 'pp-thesaurus-cache'));
 	}
 }

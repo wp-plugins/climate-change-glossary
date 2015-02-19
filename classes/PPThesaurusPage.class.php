@@ -37,12 +37,11 @@ class PPThesaurusPage {
 		}
 	}
 
-
 	protected function getThesaurusId () {
 		global $oPPThesaurus;
 
 		if (empty($this->iThesaurusId)) {
-			$this->iThesaurusId = $oPPThesaurus->aWPOptions['pageId'];
+			$this->iThesaurusId = $oPPThesaurus->WPOptions['pageId'];
 		}
 		return $this->iThesaurusId;
 	}
@@ -56,9 +55,11 @@ class PPThesaurusPage {
 
 	protected function getItemPage () {
 		if (empty($this->oItemPage)) {
-			$aChildren 	= get_children(array('numberposts'	=> 1,
-											 'post_parent'	=> $this->getThesaurusId(),
-											 'post_type'	=> 'page'));
+			$aChildren 	= get_children(array(
+				'numberposts' => 1,
+				'post_parent' => $this->getThesaurusId(),
+				'post_type' => 'page')
+			);
 			$this->oItemPage = array_shift($aChildren);
 		}
 		return $this->oItemPage;

@@ -6,7 +6,7 @@ class PPThesaurusTemplate {
 
 	protected $oPPTM;
 	protected $oItem;
-
+  protected $slug = 'pp-thesaurus';
 
 
 	public function __construct () {
@@ -23,26 +23,32 @@ class PPThesaurusTemplate {
 		return self::$oInstance;
 	}
 
-
+	/**
+	 * Shows the ABC filter
+   */
 	public function showABCIndex ($aAtts) {
 		if (isset($_GET['filter'])) {
 			$iChar = $_GET['filter'];
-		} else {
+		}
+		elseif (isset($_GET['uri'])) {
 			try {
 				if (is_null($this->oItem)) {
 					$this->oItem = $this->oPPTM->getItem($_GET['uri']);
 				}
 			} catch (Exception $e) {
-				return '<p>' . __('An error has occurred while reading concept data.', 'pp-thesaurus') . '</p>';
+				return '<p>' . __('An error has occurred while reading concept data.', $this->slug) . '</p>';
 			}
-
 			$iChar = ord(strtoupper($this->oItem->prefLabel));
 		}
-		$oPage		= PPThesaurusPage::getInstance();
-		$aIndex 	= $this->oPPTM->getAbcIndex($iChar);
-		$iCount 	= count($aIndex);
-		$sContent 	= '<ul class="PPThesaurusAbcIndex">';
-		$i 			= 1;
+		else {
+			$iChar = 65;
+		}
+
+		$oPage = PPThesaurusPage::getInstance();
+		$aIndex = $this->oPPTM->getAbcIndex($iChar);
+		$iCount = count($aIndex);
+		$sContent = '<ul class="PPThesaurusAbcIndex">';
+		$i = 1;
 		foreach($aIndex as $sChar => $sKind) {
 			$sClass = ($i == 1) ? 'first' : ($i == $iCount ? 'last' : '');
 			$sLetter = ($sChar == 'ALL') ? 'ALL' : chr($sChar);
@@ -73,11 +79,14 @@ class PPThesaurusTemplate {
 		return $sContent;
 	}
 
-
+	/**
+	 * Shows a list of concepts.
+   */
 	public function showItemList ($aAtts) {
-		$aList 		= $this->oPPTM->getList($_GET['filter']);
-		$iCount 	= count($aList);
-		$sContent 	= '';
+		$sFilter = isset($_GET['filter']) ? $_GET['filter'] : 65;
+		$aList = $this->oPPTM->getList($sFilter);
+		$iCount = count($aList);
+		$sContent = '';
 		if ($iCount > 0) {
 			$sContent .= '<ul class="PPThesaurusList">';
 			$i = 1;
@@ -93,22 +102,28 @@ class PPThesaurusTemplate {
 		return $sContent;
 	}
 
-
+	/**
+	 * Shows the datails of a concept.
+	 */
 	public function showItemDetails ($aAtts) {
+		if (!isset($_GET['uri'])) {
+      return '';
+    }
+
 		try {
 			if (is_null($this->oItem)) {
 				$this->oItem = $this->oPPTM->getItem($_GET['uri']);
 			}
 		} catch (Exception $e) {
-			return '<p>' . __('An error has occurred while reading concept data.', 'pp-thesaurus') . '</p>';
+			return '<p>' . __('An error has occurred while reading concept data.', $this->slug) . '</p>';
 		}
 
 		$sContent = '<div class="PPThesaurusDetails">';
 		if ($this->oItem->searchLink) {
-			$sContent .= '<p>' . __('Search for documents related with', 'pp-thesaurus') . ' <a href="' . $this->oItem->searchLink . '">' . $this->oItem->prefLabel . '</a></p>';
+			$sContent .= '<p>' . __('Search for documents related with', $this->slug) . ' <a href="' . $this->oItem->searchLink . '">' . $this->oItem->prefLabel . '</a></p>';
 		}
 		if ($this->oItem->altLabels) {
-			$sContent .= '<div class="synonyms"><strong>' . __('Synonyms', 'pp-thesaurus') . ':</strong> ' . implode(', ', $this->oItem->altLabels) . '</div>';
+			$sContent .= '<div class="synonyms"><strong>' . __('Synonyms', $this->slug) . ':</strong> ' . implode(', ', $this->oItem->altLabels) . '</div>';
 		}
 		$sContent .= '<p class="definition">' . $this->oPPTM->getDefinition($this->oItem->uri, $this->oItem->definition) . '</p>';
 
@@ -117,21 +132,21 @@ class PPThesaurusTemplate {
 		}
 
 		if ($this->oItem->relatedList) {
-			$sContent .= '<p class="relation"><strong>' . __('Related terms', 'pp-thesaurus') . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->relatedList)) . '</p>';
+			$sContent .= '<p class="relation"><strong>' . __('Related terms', $this->slug) . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->relatedList)) . '</p>';
 		}
 
 		if ($this->oItem->broaderList) {
-			$sContent .= '<p class="relation"><strong>' . __('Broader terms', 'pp-thesaurus') . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->broaderList)) . '</p>';
+			$sContent .= '<p class="relation"><strong>' . __('Broader terms', $this->slug) . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->broaderList)) . '</p>';
 		}
 
 		if ($this->oItem->narrowerList) {
-			$sContent .= '<p class="relation"><strong>' . __('Narrower terms', 'pp-thesaurus') . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->narrowerList)) . '</p>';
+			$sContent .= '<p class="relation"><strong>' . __('Narrower terms', $this->slug) . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->narrowerList)) . '</p>';
 		}
 
 		if ($this->oItem->uri) {
 			$sLabel	= '<strong>' . $this->oItem->prefLabel . '</strong>';
 			$sLink 	= '<a href="' . $this->oItem->uri . '" target="_blank">' . $sLabel . '</a>';
-			$sContent .= '<p>' . sprintf(__('Linked data frontend for %s', 'pp-thesaurus'), $sLink) . '.</p>';
+			$sContent .= '<p>' . sprintf(__('Linked data frontend for %s', $this->slug), $sLink) . '.</p>';
 		}
 
 		$sContent .= '</div>';
@@ -139,7 +154,9 @@ class PPThesaurusTemplate {
 		return $sContent;
 	}
 
-
+	/**
+	 * Creates a list of links.
+	 */
 	private function getLinkList ($aItemList) {
 		if (empty($aItemList)) {
 			return array();
@@ -154,7 +171,9 @@ class PPThesaurusTemplate {
 		return $aLinks;
 	}
 
-
+	/**
+	 * Creates a link.
+   */
 	public function getLink ($sText, $sUri, $sPrefLabel, $sDefinition, $bShowLink=false) {
 		if (empty($sDefinition)) {
 			if ($bShowLink) {
@@ -172,13 +191,17 @@ class PPThesaurusTemplate {
 		return $sLink;
 	}
 
-
+	/**
+   * Creates a link for an item.
+   */
 	public function getItemLink () {
 		$oPage = PPThesaurusPage::getInstance();
 		return get_bloginfo('url', 'display') . '/' . $oPage->thesaurusPage->post_name . '/' . $oPage->itemPage->post_name;
 	}
 
-
+	/**
+   * Returns the title for the browser window.
+   */
 	public function setWPTitle ($sTitle, $sSep, $sSepLocation) {
 		$sTitle		= trim($sTitle);
 		$sNewTitle 	= $this->setTitle($sTitle);
@@ -186,10 +209,12 @@ class PPThesaurusTemplate {
 			return $sTitle;
 		}
 
-		return sprintf(__('Definition of %s', 'pp-thesaurus'), $sNewTitle);
+		return sprintf(__('Definition of %s', $this->slug), $sNewTitle);
 	}
 
-
+	/**
+   * Returns the title for the page.
+   */
 	public function setTitle ($sTitle) {
 		$oPage	= PPThesaurusPage::getInstance();
 		$oChild = $oPage->itemPage;
@@ -220,3 +245,4 @@ class PPThesaurusTemplate {
 		return $this->oItem->prefLabel;
 	}
 }
+
