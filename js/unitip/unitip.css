@@ -23,7 +23,7 @@ background:url(TipPoint.png) no-repeat;
 height:22px;
 overflow:hidden;
 z-index:1001;
-behavior:url(iepngfix.htc)
+behavior:url(iepngfix.htc);
 }
 
 #unitipmid {
@@ -34,8 +34,8 @@ margin-top:-2px;
 margin-bottom:-3px;
 z-index:1002;
 padding:0 15px;
-behavior:url(iepngfix.htc)
-
+behavior:url(iepngfix.htc);
+box-sizing:content-box;
 }
 
 #unitipcap {
@@ -43,9 +43,9 @@ background:url(TipCap.png) no-repeat;
 height:15px;
 overflow:hidden;
 z-index:1001;
-behavior:url(iepngfix.htc)
+behavior:url(iepngfix.htc);
 }
 
 #reegle_maps #unitippoint,#reegle_maps #unitipmid,#reegle_maps #unitipcap {
-behavior:url(iepngfix.htc)
+behavior:url(iepngfix.htc);
 }

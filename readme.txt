@@ -3,9 +3,9 @@ Author URI: http://www.reegle.info
 Plugin URI: http://poolparty.biz
 Contributors: reegle
 Tags: renewable energy, energy efficiency, climate development, renewables, efficiency, glossary, thesaurus, poolparty, skos, rdf
-Requires at least: 2.9
-Tested up to: 3.4.1
-Stable tag: trunk
+Requires at least: 3.1
+Tested up to: 4.1
+Stable tag: 2.1
 
 This plugin imports a SKOS thesaurus, highlights terms and generates links automatically for any terms available in the thesaurus.
 
@@ -77,7 +77,16 @@ To style this tooltip, the three pictures can be interchanged and the CSS file a
 
 
 == Changelog ==
-= 2.0.1 =
+= 2.1 - 19.02.2015 =
+* Improved speed of the linking posts with key terms
+* Resolved Problem with the activation and the deinstallation if the ARC2 library is not installed
+* Resolved Problem with the HTML tag <code>
+* Added Multi site support
+* Adapted the plugin settings page
+* Improved the uninstall mechanism
+* Improved sidebar widget *Glossary Search*
+
+= 2.0.1 - 14.10.2015 =
 * Small bug fix on autocomplete function
 
 = 2.0 =

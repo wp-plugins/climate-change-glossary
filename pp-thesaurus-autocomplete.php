@@ -9,4 +9,4 @@ require_once(PP_THESAURUS_PLUGIN_DIR . 'classes/PPThesaurusPage.class.php');
 $oPPTManager 	= PPThesaurusManager::getInstance();
 $aConcepts		= $oPPTManager->searchConcepts($_GET['q'], $_GET['lang'], 100);
 
-echo join("\n", $aConcepts);
+echo implode("\n", $aConcepts);

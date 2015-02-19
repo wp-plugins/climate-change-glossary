@@ -19,6 +19,7 @@ class PPThesaurusARC2Store {
 	protected static $oInstance;
 	protected $oStore;
 	protected $bExistsData;
+	protected $slug = 'pp-thesaurus';
 
 
 	protected function __construct () {
@@ -26,7 +27,12 @@ class PPThesaurusARC2Store {
 		$this->bExistsData = null;
 	}
 
-
+	/**
+   * Return an instance of a class.
+   *
+   * @return object
+   *   A single instance of this class.
+   */
 	public static function getInstance () {
 		if(!isset(self::$oInstance)){
 			$sClass =  __CLASS__;
@@ -35,7 +41,9 @@ class PPThesaurusARC2Store {
 		return self::$oInstance;
 	}
 
-
+	/**
+	 * Returns the configuration array for the triple store.
+	 */
 	protected function getStoreConfig () {
 		$aConfig = array(
 			'db_host'		=> DB_HOST,
@@ -48,25 +56,34 @@ class PPThesaurusARC2Store {
 		return $aConfig;
 	}
 
-
+	/**
+	 * Returns the triple store object.
+	 */
 	public function getStore () {
 		return $this->oStore;
 	}
 
-
+	/**
+	 * Creates the tables for the triple store.
+	 */
 	public function setUp () {
 		if (!$this->oStore->isSetUp()) {
 			$this->oStore->setUp();
 		}
 	}
 
-
+	/**
+	 * Removes the tables for the triple store.
+	 */
 	public function drop () {
 		if ($this->oStore->isSetUp()) {
 			$this->oStore->drop();
 		}
 	}
 	
+	/**
+	 * Checks if data is stored in the triple store.
+	 */
 	public function existsData () {
 		if (is_null($this->bExistsData)) {
 			$sQuery = "
@@ -78,75 +95,79 @@ class PPThesaurusARC2Store {
 				}
 				LIMIT 1";
 			$aRow = $this->oStore->query($sQuery, 'row');
-			$this->bExistsData = count($aRow) ? true : false;
+			$this->bExistsData = count($aRow) ? TRUE : FALSE;
 		}
 
 		return $this->bExistsData;
 	}
 
-
+	/**
+	 * Imports the triples from a RDF/XML file into the triple store.
+   */
 	public static function importFromFile () {
 		$aUploadFile = $_FILES['importFile'];
 
-		// Es wurde kein SKOS File zum Importieren angegeben
+		// Check if no file is given
 		if ($aUploadFile['error'] == 4) {
 			return true;
 		}
 
-		// Downgeloadete File ueberpruefen
+		// Check the downloaded file if it is OK
 		if ($aUploadFile['error'] >= 1) {
-			throw new Exception (__('An error has occured while downloading the file.', 'pp-thesaurus'));
+			throw new Exception (__('An error has occured while downloading the file.', $this->slug));
 		}
 		if ($aUploadFile['type'] != 'application/rdf+xml') {
-			throw new Exception (__('The specified file is not an RDF file.', 'pp-thesaurus'));
+			throw new Exception (__('The specified file is not an RDF file.', $this->slug));
 		}
 		if (!is_uploaded_file($aUploadFile['tmp_name'])) {
-			throw new Exception (__('An error has occured while downloading the file.', 'pp-thesaurus'));
+			throw new Exception (__('An error has occured while downloading the file.', $this->slug));
 		}
 
-		// Das angegebene SKOS File in den ARC-Triplestore laden
+		// Create the tables for the triple store
 		$oStore = ARC2::getStore(self::getStoreConfig());
-		if (!$oStore->isSetUp()) {
-			$oStore->setUp();
-		}
+		$oStore->setUp();
 
 		// All tables are emptied
 		$oStore->reset();
 
-		// Load RDF data into ARC store
+		// Load RDF data into triple store
 		if (!($oStore->query('LOAD <file://' . $aUploadFile['tmp_name'] . '>'))) {
-			throw new Exception (__('An error has occured while storing the RDF data to the database.', 'pp-thesaurus'));
+			throw new Exception (__('An error has occured while storing the RDF data to the database.', $this->slug));
 		}
 	}
 
-
+	/**
+	 * Imports the triples form a sparql endpoint into the triple store.
+   */
 	public static function importFromEndpoint () {
 
 		// Get data from spaql endpoint
 		$sThesaurusEndpoint = empty($_POST['thesaurusEndpoint']) ? PP_THESAURUS_ENDPOINT : $_POST['thesaurusEndpoint'];
 		if (empty($sThesaurusEndpoint)) {
-			throw new Exception (__('No SPARQL endpoint has been indicated.', 'pp-thesaurus'));
+			throw new Exception (__('No SPARQL endpoint has been indicated.', $this->slug));
 		}
 
+		// Load the remote sparql endpiont
 		$aConfig = array(
 			'remote_store_endpoint'	=> $sThesaurusEndpoint,
 			'remote_store_timeout'	=> 2
 		);
 		$oEPStore = ARC2::getRemoteStore($aConfig);
 
-		// Save data into ARC store
+		// Create the tables for the triple store
 		$oARCStore = ARC2::getStore(self::getStoreConfig());
-		if (!$oARCStore->isSetUp()) {
-			$oARCStore->setUp();
-		}
+		$oARCStore->setUp();
 
 		// All tables are emptied
 		$oARCStore->reset();
 
+		// Save data into ARC store
 		self::importFromEndpointLoop($oEPStore, $oARCStore);
 	}
 
-
+	/**
+	 * Saves recursively data from sparql endpoint into the triple store.
+	 */
 	protected static function importFromEndpointLoop (&$oEPStore, &$oARCStore, $iCounter=0) {
 		$iLimit = 1000;
 		$iOffset = $iCounter * $iLimit;
@@ -158,7 +179,7 @@ class PPThesaurusARC2Store {
 
 		$aData = $oEPStore->query($sQuery, 'raw');
 		if ($aError = $oEPStore->getErrors()) {
-			throw new Exception (__('The transfer of data from the SPARQL endpoint is not possible.', 'pp-thesaurus'));
+			throw new Exception (__('The transfer of data from the SPARQL endpoint is not possible.', $this->slug));
 		}
 
 		// Insert data
@@ -175,7 +196,7 @@ class PPThesaurusARC2Store {
 			}
 			$oARCStore->insert($aData, '');
 			if ($aError = $oARCStore->getErrors()) {
-				throw new Exception (__('An error has occured while storing the data from the SPARQL endpoint to the database.', 'pp-thesaurus'));
+				throw new Exception (__('An error has occured while storing the data from the SPARQL endpoint to the database.', $this->slug));
 			}
 			self::importFromEndpointLoop($oEPStore, $oARCStore, ++$iCounter);
 		}
