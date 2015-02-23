@@ -73,7 +73,6 @@ function delete_triple_store() {
 
 	// Remove the ARC2 directory
 	@rmdir('arc');
-	@mkdir('arc');
 
 	chdir($sDir);
 	return true;
