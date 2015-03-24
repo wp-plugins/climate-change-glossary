@@ -5,7 +5,7 @@ Contributors: reegle
 Tags: renewable energy, energy efficiency, climate development, renewables, efficiency, glossary, thesaurus, poolparty, skos, rdf
 Requires at least: 3.1
 Tested up to: 4.1
-Stable tag: 2.1
+Stable tag: 2.1.1
 
 This plugin imports a SKOS thesaurus, highlights terms and generates links automatically for any terms available in the thesaurus.
 
@@ -77,6 +77,9 @@ To style this tooltip, the three pictures can be interchanged and the CSS file a
 
 
 == Changelog ==
+= 2.1.1 - 24.03.2015 =
+* Bug fixes on the ARC2 installation function
+
 = 2.1 - 19.02.2015 =
 * Improved speed of the linking posts with key terms
 * Resolved Problem with the activation and the deinstallation if the ARC2 library is not installed

@@ -7,6 +7,7 @@ class PPThesaurusManager {
   const PLACEHOLDER_CONTENT = 'pp-contentplaceholder';
   const PLACEHOLDER_TERM = 'pp-termplaceholder';
   const PLACEHOLDER_TAG = 'pp-tagplaceholder';
+  const SLUG = 'pp-thesaurus';
 
 	protected static $oInstance;
 
@@ -19,7 +20,6 @@ class PPThesaurusManager {
 	protected $aNoParseContent;
 	protected $aBlacklist;
 	protected $sBlackTags = 'a, label, map, select, sub, sup, code';
-  protected $slug = 'pp-thesaurus';
 
 
 	protected function __construct () {
@@ -66,7 +66,7 @@ class PPThesaurusManager {
 			$aRows = $this->oStore->query($sQuery, 'rows');
 
 			if ($this->oStore->getErrors()) {
-				throw new Exception (sprintf(__('Could not execute query: %s', $this->slug), $sQuery));
+				throw new Exception (sprintf(__('Could not execute query: %s', self::SLUG), $sQuery));
 			}
 
 			$aLanguages = array();
@@ -284,7 +284,7 @@ class PPThesaurusManager {
 			$aRow = $this->oStore->query($sQuery, 'row');
 
 			if ($this->oStore->getErrors()) {
-				throw new Exception (sprintf(__('Could not execute query: %s', $this->slug), $sQuery));
+				throw new Exception (sprintf(__('Could not execute query: %s', self::SLUG), $sQuery));
 			}
 
 			if (!empty($aRow)) {
@@ -429,7 +429,7 @@ class PPThesaurusManager {
 		$aRows = $this->oStore->query($sQuery, 'rows');
 
 		if ($this->oStore->getErrors()) {
-			throw new Exception (sprintf(__('Could not execute query: %s', $this->slug), $sQuery));
+			throw new Exception (sprintf(__('Could not execute query: %s', self::SLUG), $sQuery));
 		}
 		if (empty($aRows)) {
 			return null;
@@ -521,7 +521,7 @@ class PPThesaurusManager {
 		}
 
 		if ($this->oStore->getErrors()) {
-			throw new Exception (sprintf(__('Could not execute query: %s', $this->slug), $sQuery));
+			throw new Exception (sprintf(__('Could not execute query: %s', self::SLUG), $sQuery));
 		}
 
 		$aResult = array();
@@ -608,7 +608,7 @@ class PPThesaurusManager {
 			$aRows = $this->oStore->query($sQuery, 'rows');
 
 			if ($this->oStore->getErrors()) {
-				throw new Exception (sprintf(__('Could not execute query: %s', $this->slug), $sQuery));
+				throw new Exception (sprintf(__('Could not execute query: %s', self::SLUG), $sQuery));
 			}
 			if (count($aRows) <= 0) {
 				return $this->aConceptList;
@@ -715,7 +715,7 @@ class PPThesaurusManager {
 			$aRows = $this->oStore->query($sQuery, 'rows');
 
 			if ($this->oStore->getErrors()) {
-				throw new Exception (sprintf(__('Could not execute query: %s', $this->slug), $sQuery));
+				throw new Exception (sprintf(__('Could not execute query: %s', self::SLUG), $sQuery));
 			}
 			if (count($aRows) <= 0) {
 				return $this->aConceptList;
@@ -898,8 +898,8 @@ class PPThesaurusManager {
 			$sSelLang = strtoupper($this->sLanguage);
 			$sDefLang = strtoupper($this->sDefaultLanguage);
 		}
-		$sDefinition  = '<span class="PPThesaurusDefInfo">' . sprintf(__('Definition not available in %s', $this->slug), $sSelLang) . '.</span>';
-		$sDefinition .= '<strong>' . sprintf(__('Definition in %s', $this->slug), $sDefLang) . '</strong>:<br />';
+		$sDefinition  = '<span class="PPThesaurusDefInfo">' . sprintf(__('Definition not available in %s', self::SLUG), $sSelLang) . '.</span>';
+		$sDefinition .= '<strong>' . sprintf(__('Definition in %s', self::SLUG), $sDefLang) . '</strong>:<br />';
 		return $sDefinition;
 	}
 

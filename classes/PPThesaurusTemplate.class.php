@@ -2,11 +2,12 @@
 
 class PPThesaurusTemplate {
 
+  const SLUG = 'pp-thesaurus';
+
 	protected static $oInstance;
 
 	protected $oPPTM;
 	protected $oItem;
-  protected $slug = 'pp-thesaurus';
 
 
 	public function __construct () {
@@ -36,7 +37,7 @@ class PPThesaurusTemplate {
 					$this->oItem = $this->oPPTM->getItem($_GET['uri']);
 				}
 			} catch (Exception $e) {
-				return '<p>' . __('An error has occurred while reading concept data.', $this->slug) . '</p>';
+				return '<p>' . __('An error has occurred while reading concept data.', self::SLUG) . '</p>';
 			}
 			$iChar = ord(strtoupper($this->oItem->prefLabel));
 		}
@@ -115,15 +116,15 @@ class PPThesaurusTemplate {
 				$this->oItem = $this->oPPTM->getItem($_GET['uri']);
 			}
 		} catch (Exception $e) {
-			return '<p>' . __('An error has occurred while reading concept data.', $this->slug) . '</p>';
+			return '<p>' . __('An error has occurred while reading concept data.', self::SLUG) . '</p>';
 		}
 
 		$sContent = '<div class="PPThesaurusDetails">';
 		if ($this->oItem->searchLink) {
-			$sContent .= '<p>' . __('Search for documents related with', $this->slug) . ' <a href="' . $this->oItem->searchLink . '">' . $this->oItem->prefLabel . '</a></p>';
+			$sContent .= '<p>' . __('Search for documents related with', self::SLUG) . ' <a href="' . $this->oItem->searchLink . '">' . $this->oItem->prefLabel . '</a></p>';
 		}
 		if ($this->oItem->altLabels) {
-			$sContent .= '<div class="synonyms"><strong>' . __('Synonyms', $this->slug) . ':</strong> ' . implode(', ', $this->oItem->altLabels) . '</div>';
+			$sContent .= '<div class="synonyms"><strong>' . __('Synonyms', self::SLUG) . ':</strong> ' . implode(', ', $this->oItem->altLabels) . '</div>';
 		}
 		$sContent .= '<p class="definition">' . $this->oPPTM->getDefinition($this->oItem->uri, $this->oItem->definition) . '</p>';
 
@@ -132,21 +133,21 @@ class PPThesaurusTemplate {
 		}
 
 		if ($this->oItem->relatedList) {
-			$sContent .= '<p class="relation"><strong>' . __('Related terms', $this->slug) . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->relatedList)) . '</p>';
+			$sContent .= '<p class="relation"><strong>' . __('Related terms', self::SLUG) . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->relatedList)) . '</p>';
 		}
 
 		if ($this->oItem->broaderList) {
-			$sContent .= '<p class="relation"><strong>' . __('Broader terms', $this->slug) . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->broaderList)) . '</p>';
+			$sContent .= '<p class="relation"><strong>' . __('Broader terms', self::SLUG) . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->broaderList)) . '</p>';
 		}
 
 		if ($this->oItem->narrowerList) {
-			$sContent .= '<p class="relation"><strong>' . __('Narrower terms', $this->slug) . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->narrowerList)) . '</p>';
+			$sContent .= '<p class="relation"><strong>' . __('Narrower terms', self::SLUG) . ':</strong><br />' . implode(', ', $this->getLinkList($this->oItem->narrowerList)) . '</p>';
 		}
 
 		if ($this->oItem->uri) {
 			$sLabel	= '<strong>' . $this->oItem->prefLabel . '</strong>';
 			$sLink 	= '<a href="' . $this->oItem->uri . '" target="_blank">' . $sLabel . '</a>';
-			$sContent .= '<p>' . sprintf(__('Linked data frontend for %s', $this->slug), $sLink) . '.</p>';
+			$sContent .= '<p>' . sprintf(__('Linked data frontend for %s', self::SLUG), $sLink) . '.</p>';
 		}
 
 		$sContent .= '</div>';
@@ -209,7 +210,7 @@ class PPThesaurusTemplate {
 			return $sTitle;
 		}
 
-		return sprintf(__('Definition of %s', $this->slug), $sNewTitle);
+		return sprintf(__('Definition of %s', self::SLUG), $sNewTitle);
 	}
 
 	/**

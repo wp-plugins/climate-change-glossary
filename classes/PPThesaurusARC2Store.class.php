@@ -15,11 +15,11 @@ function getWpPrefix () {
 class PPThesaurusARC2Store {
 
 	const SKOS_CORE = 'http://www.w3.org/2004/02/skos/core#';
+	const SLUG = 'pp-thesaurus';
 
 	protected static $oInstance;
 	protected $oStore;
 	protected $bExistsData;
-	protected $slug = 'pp-thesaurus';
 
 
 	protected function __construct () {
@@ -114,13 +114,13 @@ class PPThesaurusARC2Store {
 
 		// Check the downloaded file if it is OK
 		if ($aUploadFile['error'] >= 1) {
-			throw new Exception (__('An error has occured while downloading the file.', $this->slug));
+			throw new Exception (__('An error has occured while downloading the file.', self::SLUG));
 		}
 		if ($aUploadFile['type'] != 'application/rdf+xml') {
-			throw new Exception (__('The specified file is not an RDF file.', $this->slug));
+			throw new Exception (__('The specified file is not an RDF file.', self::SLUG));
 		}
 		if (!is_uploaded_file($aUploadFile['tmp_name'])) {
-			throw new Exception (__('An error has occured while downloading the file.', $this->slug));
+			throw new Exception (__('An error has occured while downloading the file.', self::SLUG));
 		}
 
 		// Create the tables for the triple store
@@ -132,7 +132,7 @@ class PPThesaurusARC2Store {
 
 		// Load RDF data into triple store
 		if (!($oStore->query('LOAD <file://' . $aUploadFile['tmp_name'] . '>'))) {
-			throw new Exception (__('An error has occured while storing the RDF data to the database.', $this->slug));
+			throw new Exception (__('An error has occured while storing the RDF data to the database.', self::SLUG));
 		}
 	}
 
@@ -144,7 +144,7 @@ class PPThesaurusARC2Store {
 		// Get data from spaql endpoint
 		$sThesaurusEndpoint = empty($_POST['thesaurusEndpoint']) ? PP_THESAURUS_ENDPOINT : $_POST['thesaurusEndpoint'];
 		if (empty($sThesaurusEndpoint)) {
-			throw new Exception (__('No SPARQL endpoint has been indicated.', $this->slug));
+			throw new Exception (__('No SPARQL endpoint has been indicated.', self::SLUG));
 		}
 
 		// Load the remote sparql endpiont
@@ -179,7 +179,7 @@ class PPThesaurusARC2Store {
 
 		$aData = $oEPStore->query($sQuery, 'raw');
 		if ($aError = $oEPStore->getErrors()) {
-			throw new Exception (__('The transfer of data from the SPARQL endpoint is not possible.', $this->slug));
+			throw new Exception (__('The transfer of data from the SPARQL endpoint is not possible.', self::SLUG));
 		}
 
 		// Insert data
@@ -196,7 +196,7 @@ class PPThesaurusARC2Store {
 			}
 			$oARCStore->insert($aData, '');
 			if ($aError = $oARCStore->getErrors()) {
-				throw new Exception (__('An error has occured while storing the data from the SPARQL endpoint to the database.', $this->slug));
+				throw new Exception (__('An error has occured while storing the data from the SPARQL endpoint to the database.', self::SLUG));
 			}
 			self::importFromEndpointLoop($oEPStore, $oARCStore, ++$iCounter);
 		}

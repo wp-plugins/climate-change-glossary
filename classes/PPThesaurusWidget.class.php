@@ -2,12 +2,12 @@
 
 class PPThesaurusWidget extends WP_Widget {
 
-  protected $slug = 'pp-thesaurus';
+  const SLUG = 'pp-thesaurus';
 
 
 	public function __construct () {
-		$sTitle = __(PP_THESAURUS_SIDEBAR_TITLE, $this->slug);
-		$sDescription = __(PP_THESAURUS_SIDEBAR_DESCRIPTION, $this->slug);
+		$sTitle = __(PP_THESAURUS_SIDEBAR_TITLE, self::SLUG);
+		$sDescription = __(PP_THESAURUS_SIDEBAR_DESCRIPTION, self::SLUG);
 		parent::__construct('pp_thesaurus_sidebar_search', $sTitle, array('description' => $sDescription));
 	}
 
@@ -49,19 +49,19 @@ class PPThesaurusWidget extends WP_Widget {
 
 		echo '
 		<p>
-			<label for="' . $this->get_field_id('title') . '">' . __('Title', $this->slug) . ': <br />
+			<label for="' . $this->get_field_id('title') . '">' . __('Title', self::SLUG) . ': <br />
 				<input id="' . $this->get_field_id('title') . '" class="widefat" name="' . $this->get_field_name('title') . '" type="text" value="' . $sTitle . '" />
 			</label>
 		</p>
 		<p>
-			<label for="' . $this->get_field_id('info') . '">' . __('Info text', $this->slug) . ': <br />
+			<label for="' . $this->get_field_id('info') . '">' . __('Info text', self::SLUG) . ': <br />
 				<input id="' . $this->get_field_id('info') . '" class="widefat" name="' . $this->get_field_name('info') . '" type="text" value="' . $sInfo . '" />
 			</label>
 		</p>
 		<p>
-			<label for="' . $this->get_field_id('width') . '">' . __('Width of the search field', $this->slug) . ': <br />
+			<label for="' . $this->get_field_id('width') . '">' . __('Width of the search field', self::SLUG) . ': <br />
 				<input id="' . $this->get_field_id('width') . '" class="widefat" name="' . $this->get_field_name('width') . '" type="text" value="' . $sWidth . '" />
-			</label> ("%" ' . __('or', $this->slug) . ' "px")
+			</label> ("%" ' . __('or', self::SLUG) . ' "px")
 		</p>
 		';
 	}
