@@ -344,6 +344,18 @@ class PPThesaurus {
 			';
 			exit();
 		}
+    // Check if mbstring extension for php is installed.
+    if (!extension_loaded('mbstring')) {
+      echo '
+      <div class="wrap">
+        <div class="icon32" id="icon-options-general"></div>
+        <h2>' . PP_THESAURUS_PLUGIN_NAME . ' ' . __('Settings', $this->slug) . '</h2>
+        ' . $this->showMessage(__('Please install and enable the mbstring extension for PHP!', $this->slug), 'error') . '
+        <p>' . __('For more information please visit <a href="http://php.net/manual/en/mbstring.installation.php" target="_blank">mbstring installation</a> on php.net', $this->slug) . '</p>
+      </div>
+      ';
+      exit();
+    }
 
 		// Save the settings
 		$this->saveSettings();

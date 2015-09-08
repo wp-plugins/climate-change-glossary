@@ -4,8 +4,8 @@ Plugin URI: http://poolparty.biz
 Contributors: reegle
 Tags: renewable energy, energy efficiency, climate development, renewables, efficiency, glossary, thesaurus, poolparty, skos, rdf
 Requires at least: 3.1
-Tested up to: 4.1
-Stable tag: 2.1.1
+Tested up to: 4.3
+Stable tag: 2.1.2
 
 This plugin imports a SKOS thesaurus, highlights terms and generates links automatically for any terms available in the thesaurus.
 

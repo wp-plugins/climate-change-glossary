@@ -7,7 +7,7 @@
  * Plugin Name: Climate change glossary
  * Plugin URI: http://poolparty.biz
  * Description: This plugin imports a SKOS thesaurus via <a href="https://github.com/semsol/arc2">ARC2</a>. It highlighs terms and generates links automatically in any page which contains terms from the thesaurus.
- * Version: 2.1.1
+ * Version: 2.1.2
  * Author: reegle.info
  * Author URI: http://www.reegle.info
  * Text Domain: pp-thesaurus
